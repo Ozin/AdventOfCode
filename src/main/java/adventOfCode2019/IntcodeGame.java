@@ -1,13 +1,31 @@
 package adventOfCode2019;
 
-public class IntcodeGame extends AbstractIntcodePuzzle {
-    @Override
-    protected Object a(final long[] input) throws Exception {
-        return null;
+import lombok.Value;
+
+public class IntcodeGame {
+
+    @Value
+    public static class Tile {
+        int x, y;
+        TileType type;
     }
 
-    @Override
-    protected Object b(final long[] input) throws Exception {
-        return null;
+    public enum TileType {
+        EMPTY(" "),
+        WALL("#"),
+        BLOCK("="),
+        HORIZONTAL("_"),
+        BALL("o");
+
+        private final String representation;
+
+        TileType(final String representation) {
+            this.representation = representation;
+        }
+
+        @Override
+        public String toString() {
+            return representation;
+        }
     }
 }
