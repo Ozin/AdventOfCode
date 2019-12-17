@@ -30,13 +30,18 @@ public class PaintingRobot {
     }
 
     public void drive(final Color input) {
-        final Color targetColor = Color.values()[(int) intcodeComputer.nextOutput(input.ordinal())];
+        int output = (int) intcodeComputer.nextOutput(input.ordinal());
+        if(intcodeComputer.isDone()) return;
+
+        final Color targetColor = Color.values()[output];
         paint(targetColor);
 
         final boolean turnLeft = intcodeComputer.nextOutput() == 0;
+        if(intcodeComputer.isDone()) return;
+
         move(turnLeft);
 
-        System.out.println(toString());
+        //System.out.println(toString());
     }
 
     private void paint(final Color targetColor) {

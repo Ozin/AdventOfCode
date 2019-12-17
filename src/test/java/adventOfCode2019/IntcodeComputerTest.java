@@ -9,7 +9,7 @@ public class IntcodeComputerTest {
     @Test
     public void day09_1() {
         final long[] input = {109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99};
-        final long[] output = new IntcodeComputer(input, input.length * 10).finishProgram();
+        final long[] output = new IntcodeComputer(input).finishProgram();
 
         assertArrayEquals(input, output);
     }

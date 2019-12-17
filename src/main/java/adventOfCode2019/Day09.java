@@ -19,7 +19,7 @@ public class Day09 extends AbstractIntcodePuzzle {
     }
 
     private Object runSensorMode(final long[] input, final int mode) {
-        final var intcodeComputer = new IntcodeComputer(input, 100000);
+        final var intcodeComputer = new IntcodeComputer(input);
 
         final long[] result = intcodeComputer.finishProgram(mode);
 

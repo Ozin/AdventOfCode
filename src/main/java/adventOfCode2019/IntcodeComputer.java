@@ -6,17 +6,13 @@ import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 public class IntcodeComputer {
-    private final long[] state;
+    private long[] state;
     private int pointer;
     private int relativeBase;
     private boolean done;
 
     public IntcodeComputer(final long[] state) {
-        this(state, state.length);
-    }
-
-    public IntcodeComputer(final long[] state, int programLength) {
-        this.state = Arrays.copyOf(state, programLength);
+        this.state = Arrays.copyOf(state, state.length * 2);
         this.pointer = 0;
         this.relativeBase = 0;
         this.done = false;
@@ -84,11 +80,21 @@ public class IntcodeComputer {
     }
 
     private long getStateValue(final int pointer) {
+        increaseArray(pointer);
         return state[pointer];
     }
 
     private void setStateValue(final int index, final long value) {
+        increaseArray(pointer);
         state[index] = value;
+    }
+
+    private void increaseArray(final int pointer) {
+        if(pointer < state.length) {
+            return;
+        }
+
+        state = Arrays.copyOf(state, pointer + 1000);
     }
 
     // if the first parameter is less than the second parameter,
