@@ -55,7 +55,6 @@ public class IntcodeComputer {
                     mult();
                     break;
                 case 3:
-                    System.out.printf("Inputting first of %s%n", inputs);
                     in(inputs.removeFirst());
                     break;
                 case 4:
