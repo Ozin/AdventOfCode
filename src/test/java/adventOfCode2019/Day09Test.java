@@ -14,13 +14,6 @@ public class Day09Test {
 
     @Test
     public void b() throws Exception {
-        String jafraString = "\n" +
-                "  ##  ##  #### ###   ##  \n" +
-                "   # #  # #    #  # #  # \n" +
-                "   # #  # ###  #  # #  # \n" +
-                "   # #### #    ###  #### \n" +
-                "#  # #  # #    # #  #  # \n" +
-                " ##  #  # #    #  # #  # \n";
-        assertEquals(jafraString, day.getB());
+        assertEquals(46470L, day.getB());
     }
 }
