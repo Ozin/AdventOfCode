@@ -46,7 +46,7 @@ public class IntcodeComputer {
                 .collect(Collectors.toCollection(LinkedList::new));
 
         while (true) {
-            int opsCode = Long.valueOf(state[pointer] % 100).intValue();
+            final int opsCode = Long.valueOf(state[pointer] % 100).intValue();
             switch (opsCode) {
                 case 1:
                     add();

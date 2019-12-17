@@ -1,8 +1,11 @@
 package adventOfCode2019;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
+
+import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractDay<T> {
 
@@ -42,7 +45,8 @@ public abstract class AbstractDay<T> {
     }
 
     protected T getInput() {
-        try (final BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(getInputFilePath())))) {
+        final InputStream resourceAsStream = requireNonNull(getClass().getResourceAsStream(getInputFilePath()), "Could not find resource: " + getInputFilePath());
+        try (final BufferedReader br = new BufferedReader(new InputStreamReader(resourceAsStream))) {
             final String[] input = br.lines().toArray(String[]::new);
 
             return parseInput(input);
