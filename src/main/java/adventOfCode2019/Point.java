@@ -1,0 +1,41 @@
+package adventOfCode2019;
+
+import lombok.NonNull;
+import lombok.Value;
+import lombok.experimental.Wither;
+
+@Value
+public class Point {
+    public static final Point CENTER = new Point(0, 0);
+
+    public Point(final int x, final int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public Point(final Vector v) {
+        this(v.getDx(), v.getDy());
+    }
+
+    @Wither
+    int x;
+
+    @Wither
+    int y;
+
+    public Point addX(final int dX) {
+        return withX(x + dX);
+    }
+
+    public Point addY(final int dY) {
+        return withY(y + dY);
+    }
+
+    public int manhattenDistance(@NonNull final Point b) {
+        return Math.abs(x - b.x) + Math.abs(y - b.y);
+    }
+
+    public int manhattenDistanceFromSource() {
+        return manhattenDistance(CENTER);
+    }
+}
