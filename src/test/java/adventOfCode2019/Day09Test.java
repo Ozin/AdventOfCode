@@ -9,7 +9,7 @@ public class Day09Test {
 
     @Test
     public void a() throws Exception {
-        assertEquals(1806L, day.getA());
+        assertEquals(3497884671L, day.getA());
     }
 
     @Test
