@@ -3,7 +3,9 @@ package adventOfCode2019;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Map;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.util.Objects.requireNonNull;
 
@@ -20,7 +22,7 @@ public abstract class AbstractDay<T> {
         try {
             System.out.printf("Result of day %02d B is %s%n", dayNumber(), b(getInput()));
             System.out.flush();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             System.err.flush();
         }
@@ -30,7 +32,7 @@ public abstract class AbstractDay<T> {
         try {
             System.out.printf("Result of day %02d A is %s%n", dayNumber(), a(getInput()));
             System.out.flush();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             System.err.flush();
         }
@@ -76,5 +78,18 @@ public abstract class AbstractDay<T> {
 
     public final void setInputFilePath(final String inputFilePath) {
         this.inputFilePath = inputFilePath;
+    }
+
+    public abstract static class InputEntity {
+
+        public abstract Pattern getPattern();
+
+        public MatchResult getMatchResult(final String input) {
+            final Matcher matcher = getPattern().matcher(input);
+            if (!matcher.find()) {
+                throw new IllegalStateException("Could not match pattern on input: " + input);
+            }
+            return matcher.toMatchResult();
+        }
     }
 }
