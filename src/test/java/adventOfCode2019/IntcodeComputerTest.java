@@ -40,7 +40,7 @@ public class IntcodeComputerTest {
         final long[] output = intcodeComputer.finishProgram();
 
         assertEquals(0, 0);
-        assertArrayEquals(new long[]{1002, 4, 3, 4, 99}, intcodeComputer.getState());
+        assertArrayEquals(new long[]{1002, 4, 3, 4, 99, 0,0,0,0,0}, intcodeComputer.getState());
 
     }
 }
