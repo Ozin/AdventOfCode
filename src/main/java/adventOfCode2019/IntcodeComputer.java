@@ -46,7 +46,7 @@ public class IntcodeComputer {
                 .collect(Collectors.toCollection(LinkedList::new));
 
         while (true) {
-            final int opsCode = Long.valueOf(state[pointer] % 100).intValue();
+            final int opsCode = Long.valueOf(getStateValue(pointer) % 100).intValue();
             switch (opsCode) {
                 case 1:
                     add();
@@ -83,68 +83,76 @@ public class IntcodeComputer {
         }
     }
 
+    private long getStateValue(final int pointer) {
+        return state[pointer];
+    }
+
+    private void setStateValue(final int index, final long value) {
+        state[index] = value;
+    }
+
     // if the first parameter is less than the second parameter,
     // it stores 1 in the position given by the third parameter.
     // Otherwise, it stores 0.
     private void less_than() {
-        final var value1 = state[getIndex(1)];
-        final var value2 = state[getIndex(2)];
+        final var value1 = getStateValue(getIndex(1));
+        final var value2 = getStateValue(getIndex(2));
 
-        state[getIndex(3)] = value1 < value2 ? 1 : 0;
+        setStateValue(getIndex(3), value1 < value2 ? 1 : 0);
         pointer += 4;
     }
 
     private void equals() {
-        final var value1 = state[getIndex(1)];
-        final var value2 = state[getIndex(2)];
+        final var value1 = getStateValue(getIndex(1));
+        final var value2 = getStateValue(getIndex(2));
 
-        state[getIndex(3)] = value1 == value2 ? 1 : 0;
+        setStateValue(getIndex(3), value1 == value2 ? 1 : 0);
         pointer += 4;
     }
 
     private void jump_if_true() {
-        final var value1 = state[getIndex(1)];
-        final var value2 = state[getIndex(2)];
+        final var value1 = getStateValue(getIndex(1));
+        final var value2 = getStateValue(getIndex(2));
 
         pointer = Long.valueOf(value1 != 0 ? value2 : pointer + 3).intValue();
     }
 
     private void jump_if_false() {
-        final var value1 = state[getIndex(1)];
-        final var value2 = state[getIndex(2)];
+        final var value1 = getStateValue(getIndex(1));
+        final var value2 = getStateValue(getIndex(2));
 
         pointer = Long.valueOf(value1 == 0 ? value2 : pointer + 3).intValue();
     }
 
     private long out() {
-        final long value = state[getIndex(1)];
+        final long value = getStateValue(getIndex(1));
         pointer += 2;
         return value;
     }
 
     private void in(final long inputValue) {
-        state[getIndex(1)] = inputValue;
+        setStateValue(getIndex(1), inputValue);
         pointer += 2;
     }
 
     private void add() {
-        final var value1 = state[getIndex(1)];
-        final var value2 = state[getIndex(2)];
+        final var value1 = getStateValue(getIndex(1));
+        final var value2 = getStateValue(getIndex(2));
 
-        state[getIndex(3)] = value1 + value2;
+        setStateValue(getIndex(3), value1 + value2);
         pointer += 4;
     }
 
     private void mult() {
-        final var value1 = state[getIndex(1)];
-        final var value2 = state[getIndex(2)];
+        final var value1 = getStateValue(getIndex(1));
+        final var value2 = getStateValue(getIndex(2));
 
-        state[getIndex(3)] = value1 * value2;
+        setStateValue(getIndex(3), value1 * value2);
         pointer += 4;
     }
 
     private void adjustRelativeBase() {
-        this.relativeBase += state[getIndex(1)];
+        this.relativeBase += getStateValue(getIndex(1));
         pointer += 2;
     }
 
@@ -159,12 +167,12 @@ public class IntcodeComputer {
             case 2:
                 return relativeBase + indexValAt(param);
             default:
-                throw new IllegalStateException(String.format("Unknown parameter mode: %s, instruction: %s, paramPos: %s", paramMode, state[pointer], param));
+                throw new IllegalStateException(String.format("Unknown parameter mode: %s, instruction: %s, paramPos: %s", paramMode, getStateValue(pointer), param));
         }
     }
 
     private int indexValAt(final int relativToPointer) {
-        return Long.valueOf(state[pointer + relativToPointer]).intValue();
+        return Long.valueOf(getStateValue(pointer + relativToPointer)).intValue();
     }
 
     private int powTen(final int i) {
