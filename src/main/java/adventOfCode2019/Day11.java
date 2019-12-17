@@ -8,14 +8,17 @@ public class Day11 extends AbstractIntcodePuzzle {
 
     @Override
     protected Object a(final long[] input) throws Exception {
-        PaintingRobot paintingRobot = new PaintingRobot(input);
-        paintingRobot.autonomicDrive();
+        final PaintingRobot paintingRobot = new PaintingRobot(input);
+        paintingRobot.autonomicDrive(PaintingRobot.Color.BLACK);
         paintingRobot.getTiles().keySet().size();
         return paintingRobot.getTiles().keySet().size();
     }
 
     @Override
     protected Object b(final long[] input) throws Exception {
-        return null;
+        final PaintingRobot paintingRobot = new PaintingRobot(input);
+        paintingRobot.autonomicDrive(PaintingRobot.Color.WHITE);
+        paintingRobot.getTiles().keySet().size();
+        return paintingRobot.toString();
     }
 }

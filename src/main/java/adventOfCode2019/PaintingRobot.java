@@ -22,9 +22,9 @@ public class PaintingRobot {
         return tiles;
     }
 
-    public void autonomicDrive() {
+    public void autonomicDrive(final Color startingColor) {
         while (!intcodeComputer.isDone()) {
-            final Color currentColor = tiles.getOrDefault(curTile, Color.BLACK);
+            final Color currentColor = tiles.getOrDefault(curTile, startingColor);
             drive(currentColor);
         }
     }
@@ -72,9 +72,9 @@ public class PaintingRobot {
 
     @Override
     public String toString() {
-        final int minX = tiles.keySet().stream().mapToInt(Point::getX).min().orElseThrow() - 2;
-        final int maxX = tiles.keySet().stream().mapToInt(Point::getX).max().orElseThrow() + 2;
-        final int minY = tiles.keySet().stream().mapToInt(Point::getY).min().orElseThrow() - 2;
+        final int minX = tiles.keySet().stream().mapToInt(Point::getX).min().orElseThrow();
+        final int maxX = tiles.keySet().stream().mapToInt(Point::getX).max().orElseThrow() + 1;
+        final int minY = tiles.keySet().stream().mapToInt(Point::getY).min().orElseThrow() - 1;
         final int maxY = tiles.keySet().stream().mapToInt(Point::getY).max().orElseThrow() + 2;
 
         final StringBuilder sb = new StringBuilder();
