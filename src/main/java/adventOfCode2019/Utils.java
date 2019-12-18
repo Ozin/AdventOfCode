@@ -1,6 +1,7 @@
 package adventOfCode2019;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 
 public class Utils {
     /**
@@ -45,5 +46,13 @@ public class Utils {
             }
         }
         return res;
+    }
+
+    public static Function<Integer, Integer> multiply(int factor) {
+        return otherFactor -> factor * otherFactor;
+    }
+
+    public static Integer add(final Integer addend1, final Integer addend2) {
+        return addend1 + addend2;
     }
 }

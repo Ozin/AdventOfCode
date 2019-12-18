@@ -44,7 +44,7 @@ public class Day14Test {
 
     @Test
     public void aFinal() throws Exception {
-        assertEquals(298L, day14.getA());
+        assertEquals(362713, day14.getA());
     }
 
     @Test
