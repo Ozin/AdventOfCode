@@ -52,7 +52,15 @@ public class Utils {
         return otherFactor -> factor * otherFactor;
     }
 
+    public static Function<Long, Long> multiply(long factor) {
+        return otherFactor -> factor * otherFactor;
+    }
+
     public static Integer add(final Integer addend1, final Integer addend2) {
+        return addend1 + addend2;
+    }
+
+    public static Long add(final Long addend1, final Long addend2) {
         return addend1 + addend2;
     }
 }
