@@ -13,7 +13,7 @@ public class PaintingRobot {
 
     public PaintingRobot(final long[] brain) {
         curDirection = UP;
-        intcodeComputer = new IntcodeComputer(brain);
+        intcodeComputer = new IntcodeComputer(brain, new long[0]);
         tiles = new HashMap<>();
         curTile = new Point(0, 0);
     }
@@ -30,14 +30,15 @@ public class PaintingRobot {
     }
 
     public void drive(final Color input) {
-        int output = (int) intcodeComputer.nextOutput(input.ordinal());
-        if(intcodeComputer.isDone()) return;
+        intcodeComputer.addInput(input.ordinal());
+        int output = (int) intcodeComputer.nextOutput();
+        if (intcodeComputer.isDone()) return;
 
         final Color targetColor = Color.values()[output];
         paint(targetColor);
 
         final boolean turnLeft = intcodeComputer.nextOutput() == 0;
-        if(intcodeComputer.isDone()) return;
+        if (intcodeComputer.isDone()) return;
 
         move(turnLeft);
 

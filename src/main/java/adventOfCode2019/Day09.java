@@ -1,7 +1,5 @@
 package adventOfCode2019;
 
-import java.util.Arrays;
-
 public class Day09 extends AbstractIntcodePuzzle {
 
     public static void main(String[] args) {
@@ -19,9 +17,9 @@ public class Day09 extends AbstractIntcodePuzzle {
     }
 
     private Object runSensorMode(final long[] input, final int mode) {
-        final var intcodeComputer = new IntcodeComputer(input);
+        final var intcodeComputer = new IntcodeComputer(input, new long[]{mode});
 
-        final long[] result = intcodeComputer.finishProgram(mode);
+        final long[] result = intcodeComputer.finishProgram();
 
         if (result.length > 1) {
             throw new IllegalStateException("Result must have only one output");

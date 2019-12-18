@@ -16,7 +16,7 @@ public class Day02 extends AbstractIntcodePuzzle {
         program[1] = noun;
         program[2] = verb;
 
-        final IntcodeComputer intcodeComputer = new IntcodeComputer(program);
+        final IntcodeComputer intcodeComputer = new IntcodeComputer(program, new long[0]);
         intcodeComputer.nextOutput();
         return intcodeComputer.getState()[0];
     }

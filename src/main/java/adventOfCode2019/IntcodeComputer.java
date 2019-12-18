@@ -6,40 +6,42 @@ import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 public class IntcodeComputer {
+    private final LinkedList<Long> input;
     private long[] state;
     private int pointer;
     private int relativeBase;
     private boolean done;
 
-    public IntcodeComputer(final long[] state) {
+    public IntcodeComputer(final long[] state, final long[] input) {
         this.state = Arrays.copyOf(state, state.length * 2);
         this.pointer = 0;
         this.relativeBase = 0;
+        this.input = Arrays.stream(input)
+                .boxed()
+                .collect(Collectors.toCollection(LinkedList::new));
         this.done = false;
     }
 
-    public long[] finishProgram(long... inputValues) {
+    public IntcodeComputer(final long[] state) {
+        this(state, new long[0]);
+    }
+
+    public long[] finishProgram() {
         final var outputs = new ArrayList<Long>();
         while (true) {
-            final long output = nextOutput(inputValues);
+            final long output = nextOutput();
             if (isDone()) {
                 return outputs.stream().mapToLong(Long::longValue).toArray();
             } else {
                 outputs.add(output);
             }
-
-            inputValues = new long[0];
         }
     }
 
-    public long nextOutput(final long... inputValues) {
+    public long nextOutput() {
         if (done) {
             throw new IllegalStateException("Already done!");
         }
-
-        final var inputs = Arrays.stream(inputValues)
-                .boxed()
-                .collect(Collectors.toCollection(LinkedList::new));
 
         while (true) {
             final int opsCode = Long.valueOf(getStateValue(pointer) % 100).intValue();
@@ -51,7 +53,7 @@ public class IntcodeComputer {
                     mult();
                     break;
                 case 3:
-                    in(inputs.removeFirst());
+                    in(input.removeFirst());
                     break;
                 case 4:
                     return out();
@@ -90,7 +92,7 @@ public class IntcodeComputer {
     }
 
     private void increaseArray(final int pointer) {
-        if(pointer < state.length) {
+        if (pointer < state.length) {
             return;
         }
 
@@ -192,5 +194,9 @@ public class IntcodeComputer {
 
     public long[] getState() {
         return state;
+    }
+
+    public void addInput(final long input) {
+        this.input.add(input);
     }
 }

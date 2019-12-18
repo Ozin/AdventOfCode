@@ -20,9 +20,9 @@ public class Day05 extends AbstractIntcodePuzzle {
     }
 
     private Object runToEnd(final long[] program, final int input) {
-        final IntcodeComputer intcodeComputer = new IntcodeComputer(program);
+        final IntcodeComputer intcodeComputer = new IntcodeComputer(program, new long[] {input});
         Optional<Long> lastOutput = Optional.empty();
-        long nextOutput = intcodeComputer.nextOutput(input);
+        long nextOutput = intcodeComputer.nextOutput();
         while (!intcodeComputer.isDone()) {
             lastOutput = Optional.of(nextOutput);
             nextOutput = intcodeComputer.nextOutput();
