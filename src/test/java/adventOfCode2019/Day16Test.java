@@ -16,7 +16,7 @@ public class Day16Test {
 
     @Test
     public void bFinal() throws Exception {
-        assertEquals(13956L, day16.getB());
+        assertEquals("55078585", day16.getB());
     }
 
     @Test
@@ -48,23 +48,23 @@ public class Day16Test {
     }
 
     @Test
-    public void a5() throws Exception {
+    public void b1() throws Exception {
         day16.setInputFilePath("/2019/day16-05.txt");
 
-        assertEquals("84462026", day16.getA());
+        assertEquals("84462026", day16.getB());
     }
 
     @Test
-    public void a6() throws Exception {
+    public void b2() throws Exception {
         day16.setInputFilePath("/2019/day16-06.txt");
 
-        assertEquals("78725270", day16.getA());
+        assertEquals("78725270", day16.getB());
     }
 
     @Test
-    public void a7() throws Exception {
+    public void b3() throws Exception {
         day16.setInputFilePath("/2019/day16-07.txt");
 
-        assertEquals("53553731", day16.getA());
+        assertEquals("53553731", day16.getB());
     }
 }

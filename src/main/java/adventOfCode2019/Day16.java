@@ -1,5 +1,8 @@
 package adventOfCode2019;
 
+import static java.util.stream.Collectors.joining;
+
+
 import java.util.Arrays;
 import one.util.streamex.IntStreamEx;
 
@@ -25,19 +28,26 @@ public class Day16 extends AbstractDay<int[]> {
     @Override
     protected Object b(final int[] input) throws Exception {
         final int multiplicator = 10000;
-        int[] wip = new int[input.length * multiplicator];
+        int[] hugeArray = new int[input.length * multiplicator];
         for (int i = 0; i < multiplicator; i++) {
-            System.arraycopy(input, 0, wip, i * input.length, input.length);
+            System.arraycopy(input, 0, hugeArray, i * input.length, input.length);
         }
+
+        final int offset = Integer.parseInt(Arrays.stream(input).mapToObj(Integer::toString).collect(joining("")).substring(0, 7));
+        final int[] arrayWithOffset = new int[hugeArray.length - offset];
+        System.arraycopy(hugeArray, offset, arrayWithOffset, 0, arrayWithOffset.length);
 
         for (int i = 0; i < 100; i++) {
-            wip = runPhase(wip);
-            // System.out.printf("After %d phase: %s%n", i + 1, IntStreamEx.of(input).joining(""));
+            int result = 0;
+            for (int index = arrayWithOffset.length - 1; index >= 0; index--) {
+                result += arrayWithOffset[index];
+                result = Math.abs(result % 10);
+                arrayWithOffset[index] = result;
+            }
         }
 
-        final String joining = IntStreamEx.of(input).joining("");
-        final int offset = Integer.parseInt(joining.substring(0, 7));
-        return joining.substring(offset, offset + 8);
+        final String joining = IntStreamEx.of(arrayWithOffset).joining("");
+        return joining.substring(0, 8);
     }
 
     private int[] runPhase(final int[] input) {
