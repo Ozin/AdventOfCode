@@ -1,9 +1,10 @@
 package adventOfCode2019;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+
+
+import org.junit.Test;
 
 public class IntcodeComputerTest {
     @Test
@@ -39,8 +40,21 @@ public class IntcodeComputerTest {
         final IntcodeComputer intcodeComputer = new IntcodeComputer(input);
         final long[] output = intcodeComputer.finishProgram();
 
-        assertEquals(0, 0);
-        assertArrayEquals(new long[]{1002, 4, 3, 4, 99, 0,0,0,0,0}, intcodeComputer.getState());
+        assertArrayEquals(new long[] {}, output);
+        assertArrayEquals(new long[] {1002, 4, 3, 4, 99, 0, 0, 0, 0, 0}, intcodeComputer.getState());
 
+    }
+
+    @Test
+    public void day05_2() {
+        final long[] input = {3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31,
+            1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104,
+            999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99};
+
+        final IntcodeComputer intcodeComputer = new IntcodeComputer(input);
+        intcodeComputer.addInput(1);
+        final long[] output = intcodeComputer.finishProgram();
+
+        assertArrayEquals(new long[] {999}, output);
     }
 }
