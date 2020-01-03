@@ -87,7 +87,7 @@ public class IntcodeComputer {
     }
 
     private void setStateValue(final int index, final long value) {
-        increaseArray(pointer);
+        increaseArray(index);
         state[index] = value;
     }
 

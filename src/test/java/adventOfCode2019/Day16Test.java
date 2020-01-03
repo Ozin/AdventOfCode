@@ -3,7 +3,6 @@ package adventOfCode2019;
 import static org.junit.Assert.assertEquals;
 
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class Day16Test {

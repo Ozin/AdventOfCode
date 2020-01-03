@@ -1,5 +1,7 @@
 package adventOfCode2019;
 
+import one.util.streamex.StreamEx;
+
 public enum Direction {
     UP("^"),
     RIGHT(">"),
@@ -23,5 +25,26 @@ public enum Direction {
 
     public String getGridString() {
         return gridString;
+    }
+
+    public static Direction getByString(final String representation) {
+        return StreamEx.of(VALUES)
+            .findFirst(v -> v.getGridString().equals(representation))
+            .orElseThrow();
+    }
+
+    public Point continueStraight(Point p) {
+        switch (this) {
+            case UP:
+                return p.addY(-1);
+            case RIGHT:
+                return p.addX(1);
+            case DOWN:
+                return p.addY(1);
+            case LEFT:
+                return p.addX(-1);
+            default:
+                throw new UnsupportedOperationException("Direction " + this + " is not supported");
+        }
     }
 }
