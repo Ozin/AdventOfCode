@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import one.util.streamex.EntryStream;
@@ -54,13 +55,13 @@ public class Day17 extends AbstractIntcodePuzzle {
             intcodeComputer.addInput('\n');
         }
 
-        String line = null;
+        Optional<String> line = Optional.empty();
         while (!intcodeComputer.isDone()) {
-            line = getLine(intcodeComputer);
-            System.out.println(line);
+            line = Optional.of(getLine(intcodeComputer));
+            line.ifPresent(System.out::println);
         }
 
-        return Integer.parseInt(line);
+        return line.map(Integer::parseInt).orElseThrow();
     }
 
     private String getLine(final IntcodeComputer intcodeComputer) {
