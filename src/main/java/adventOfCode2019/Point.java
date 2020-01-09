@@ -3,6 +3,7 @@ package adventOfCode2019;
 import lombok.NonNull;
 import lombok.Value;
 import lombok.experimental.Wither;
+import one.util.streamex.EntryStream;
 
 @Value
 public class Point {
@@ -37,5 +38,14 @@ public class Point {
 
     public int manhattenDistanceFromSource() {
         return manhattenDistance(CENTER);
+    }
+
+    public EntryStream<Direction, Point> getNeighbours() {
+        return EntryStream.of(
+            Direction.LEFT, addX(-1),
+            Direction.RIGHT, addX(1),
+            Direction.UP, addY(-1),
+            Direction.DOWN, addY(1)
+        );
     }
 }

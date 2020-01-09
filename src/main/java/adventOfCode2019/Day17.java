@@ -127,17 +127,10 @@ public class Day17 extends AbstractIntcodePuzzle {
     }
 
     private Predicate<? super Point> surroundedByScaffolding(final Map<Point, String> map) {
-        return point ->
-            fourTilesAround(point).values().map(map::get).allMatch("#"::equals);
-    }
-
-    private EntryStream<Direction, Point> fourTilesAround(final Point point) {
-        return EntryStream.of(
-            Direction.LEFT, point.addX(-1),
-            Direction.RIGHT, point.addX(1),
-            Direction.UP, point.addY(-1),
-            Direction.DOWN, point.addY(1)
-        );
+        return point -> EntryStream.of(point.getNeighbours())
+            .values()
+            .map(map::get)
+            .allMatch("#"::equals);
     }
 
     private void printMap(final Map<Point, String> map) {
