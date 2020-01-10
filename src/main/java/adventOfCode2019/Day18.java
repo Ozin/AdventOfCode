@@ -2,20 +2,28 @@ package adventOfCode2019;
 
 import static java.util.function.Predicate.not;
 
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 import one.util.streamex.EntryStream;
 
 public class Day18 extends Abstract2DPuzzle {
 
     public static final Character AT_SIGN = '@';
     public static final Character HASH = '#';
+
+    int depth = 0;
+    Map<Map<Point, Character>, Integer> mapCache;
+    Map<Map.Entry<Point, Point>, Integer> segmentCache;
+
+    private void reset() {
+        depth = 0;
+        mapCache = new HashMap<>();
+        segmentCache = new HashMap<>();
+    }
 
     @Override
     protected Map<Point, Character> parseInput(final String[] rawInput) throws Exception {
@@ -24,63 +32,109 @@ public class Day18 extends Abstract2DPuzzle {
 
     @Override
     protected Object b(final Map<Point, Character> input) throws Exception {
-        return null;
+        reset();
+        Map<Point, Character> alteredMap = new HashMap<>(input);
+
+        Point center = getCurrentPositions(alteredMap).iterator().next();
+        alteredMap.put(center.addY(-1).addX(-1), '@');
+        alteredMap.put(center.addY(1).addX(-1), '@');
+        alteredMap.put(center.addY(-1).addX(1), '@');
+        alteredMap.put(center.addY(1).addX(1), '@');
+
+        alteredMap.put(center, '#');
+        alteredMap.put(center.addX(1), '#');
+        alteredMap.put(center.addX(-1), '#');
+        alteredMap.put(center.addY(1), '#');
+        alteredMap.put(center.addY(-1), '#');
+
+        return findShortestSolution(alteredMap);
     }
 
     @Override
     protected Object a(final Map<Point, Character> input) throws Exception {
+        reset();
+        return findShortestSolution(Map.copyOf(input));
+    }
 
-        final LinkedList<Map.Entry<Map<Point, Character>, Integer>> openGames = new LinkedList<>();
-        openGames.add(Map.entry(input, 0));
+    private int findShortestSolution(final Map<Point, Character> currentGame) {
+        if (mapCache.containsKey(currentGame)) {
+            return mapCache.get(currentGame);
+        }
+
+        if (mapCache.size() % 100 == 0) {
+            System.out.printf("Current depth: %s; Closed solutions: %s%n", depth, mapCache.size());
+        }
+        depth++;
+        // if(openGames.size() > 10) break;
+
+//            System.out.println("old");
+//            printGame(currentGame);
+
+        if (gameIsDone(currentGame)) {
+            depth--;
+            return 0;
+        }
+
+        final Pathfinder pathfinder = new Pathfinder(currentGame.keySet());
+        final Set<Point> currentPositions = getCurrentPositions(currentGame);
+
         int minimalSteps = Integer.MAX_VALUE;
 
-        while (!openGames.isEmpty()) {
-            // if(openGames.size() > 10) break;
-
-            System.out.println("Number of games: " + openGames.size());
-            final Map.Entry<Map<Point, Character>, Integer> currentGame = openGames.removeFirst();
-
-            //System.out.println("old");
-            //printGame(currentGame.getKey());
-
-            if (gameIsDone(currentGame)) {
-                minimalSteps = Math.min(minimalSteps, currentGame.getValue());
-                final int m = minimalSteps;
-                openGames.removeIf(game -> game.getValue() >= m);
-                continue;
-            }
-
-            final Pathfinder pathfinder = new Pathfinder(currentGame.getKey().keySet());
-            final Point currentPosition = getCurrentPosition(currentGame.getKey());
-
-            final Map<Point, Character> availableKeys = getAvailableKeys(currentGame.getKey(), currentPosition);
+        for(Point currentPosition : currentPositions) {
+            final Map<Point, Character> availableKeys = getAvailableKeys(currentGame, currentPosition);
             for (final Map.Entry<Point, Character> availableKey : availableKeys.entrySet()) {
-                final int nextSegment = pathfinder.findShortestPath(currentPosition, availableKey.getKey())
-                    .map(List::size)
-                    .orElseThrow() - 1;
+                final int nextSegment = findSegment(pathfinder, currentPosition, availableKey.getKey());
 
-                final Map<Point, Character> newMap = new HashMap<>(currentGame.getKey());
-                EntryStream.of(newMap)
-                    .findFirst(tile -> tile.getValue().equals(Character.toUpperCase(availableKey.getValue())))
-                    .map(Map.Entry::getKey)
-                    .ifPresent(openedDoor -> newMap.put(openedDoor, '.'));
+                final Map<Point, Character> nextMap = nextMap(currentGame, currentPosition, availableKey);
 
-                newMap.put(availableKey.getKey(), AT_SIGN);
-                newMap.put(currentPosition, '.');
+                minimalSteps = Math.min(minimalSteps, findShortestSolution(nextMap) + nextSegment);
 
-                openGames.add(Map.entry(newMap, nextSegment + currentGame.getValue()));
-
-                //System.out.println();
-                //System.out.println("new");
-                //printGame(newMap);
+//                System.out.println();
+//                System.out.println("new");
+//                printGame(newMap);
             }
         }
 
+        depth--;
+        mapCache.put(currentGame, minimalSteps);
         return minimalSteps;
     }
 
-    private boolean gameIsDone(final Map.Entry<Map<Point, Character>, Integer> currentGame) {
-        return currentGame.getKey().values().stream().noneMatch(Character::isAlphabetic);
+    private int findSegment(final Pathfinder pathfinder, final Point currentPosition, final Point availableKey) {
+        Integer segment = segmentCache.get(Map.entry(currentPosition, availableKey));
+
+        if(segment != null) return segment;
+
+        segment = segmentCache.get(Map.entry(availableKey, currentPosition));
+
+        if(segment != null) return segment;
+
+        segment = pathfinder.findShortestPath(currentPosition, availableKey)
+            .map(List::size)
+            .orElseThrow() - 1;
+
+        segmentCache.put(Map.entry(currentPosition, availableKey), segment);
+
+        System.out.println("Segments: " + segmentCache.size());
+
+        return segment;
+    }
+
+    private Map<Point, Character> nextMap(final Map<Point, Character> currentGame, final Point currentPosition, final Map.Entry<Point, Character> availableKey) {
+        final Map<Point, Character> newMap = new HashMap<>(currentGame);
+        EntryStream.of(newMap)
+            .findFirst(tile -> tile.getValue().equals(Character.toUpperCase(availableKey.getValue())))
+            .map(Map.Entry::getKey)
+            .ifPresent(openedDoor -> newMap.put(openedDoor, '.'));
+
+        newMap.put(availableKey.getKey(), AT_SIGN);
+        newMap.put(currentPosition, '.');
+
+        return Map.copyOf(newMap);
+    }
+
+    private boolean gameIsDone(final Map<Point, Character> currentGame) {
+        return currentGame.values().stream().noneMatch(Character::isAlphabetic);
     }
 
     private Map<Point, Character> getAvailableKeys(final Map<Point, Character> input, final Point currentPosition) {
@@ -114,12 +168,11 @@ public class Day18 extends Abstract2DPuzzle {
         return keys;
     }
 
-    private Point getCurrentPosition(final Map<Point, Character> input) {
+    private Set<Point> getCurrentPositions(final Map<Point, Character> input) {
         return EntryStream.of(input)
             .filterValues(AT_SIGN::equals)
             .keys()
-            .findFirst()
-            .orElseThrow();
+            .toSet();
     }
 
     public void printGame(final Map<Point, Character> gameState) {
