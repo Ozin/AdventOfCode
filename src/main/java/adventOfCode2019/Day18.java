@@ -41,11 +41,17 @@ public class Day18 extends Abstract2DPuzzle {
         alteredMap.put(center.addY(-1).addX(1), '@');
         alteredMap.put(center.addY(1).addX(1), '@');
 
-        alteredMap.put(center, '#');
-        alteredMap.put(center.addX(1), '#');
-        alteredMap.put(center.addX(-1), '#');
-        alteredMap.put(center.addY(1), '#');
-        alteredMap.put(center.addY(-1), '#');
+        // instead of replacing with hashes, remove invalid positions
+        // alteredMap.put(center, '#');
+        // alteredMap.put(center.addX(1), '#');
+        // alteredMap.put(center.addX(-1), '#');
+        // alteredMap.put(center.addY(1), '#');
+        // alteredMap.put(center.addY(-1), '#');
+        alteredMap.remove(center);
+        alteredMap.remove(center.addX(1));
+        alteredMap.remove(center.addX(-1));
+        alteredMap.remove(center.addY(1));
+        alteredMap.remove(center.addY(-1));
 
         return findShortestSolution(alteredMap);
     }
@@ -80,8 +86,11 @@ public class Day18 extends Abstract2DPuzzle {
 
         int minimalSteps = Integer.MAX_VALUE;
 
-        for(Point currentPosition : currentPositions) {
+        for (final Point currentPosition : currentPositions) {
             final Map<Point, Character> availableKeys = getAvailableKeys(currentGame, currentPosition);
+//            System.out.println();
+//            System.out.println("availableKeys: " + availableKeys.values());
+//            printGame(currentGame);
             for (final Map.Entry<Point, Character> availableKey : availableKeys.entrySet()) {
                 final int nextSegment = findSegment(pathfinder, currentPosition, availableKey.getKey());
 
@@ -90,24 +99,32 @@ public class Day18 extends Abstract2DPuzzle {
                 minimalSteps = Math.min(minimalSteps, findShortestSolution(nextMap) + nextSegment);
 
 //                System.out.println();
+//                System.out.println("old");
+//                printGame(currentGame);
+//                System.out.println();
 //                System.out.println("new");
-//                printGame(newMap);
+//                printGame(nextMap);
             }
         }
 
         depth--;
-        mapCache.put(currentGame, minimalSteps);
+        final int finalMinimalSteps = minimalSteps;
+        mapCache.compute(currentGame, (key, oldValue) -> Math.min(oldValue == null ? Integer.MAX_VALUE : oldValue, finalMinimalSteps));
         return minimalSteps;
     }
 
     private int findSegment(final Pathfinder pathfinder, final Point currentPosition, final Point availableKey) {
         Integer segment = segmentCache.get(Map.entry(currentPosition, availableKey));
 
-        if(segment != null) return segment;
+        if (segment != null) {
+            return segment;
+        }
 
         segment = segmentCache.get(Map.entry(availableKey, currentPosition));
 
-        if(segment != null) return segment;
+        if (segment != null) {
+            return segment;
+        }
 
         segment = pathfinder.findShortestPath(currentPosition, availableKey)
             .map(List::size)
