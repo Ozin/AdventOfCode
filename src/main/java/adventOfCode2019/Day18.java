@@ -205,6 +205,5 @@ public class Day18 extends Abstract2DPuzzle {
             }
             System.out.println();
         }
-
     }
 }
