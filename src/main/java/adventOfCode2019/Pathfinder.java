@@ -40,8 +40,11 @@ public class Pathfinder {
         }
 
         public int fCost(Point x) {
-            if(!gCost.containsKey(x)) return Integer.MAX_VALUE;
-            else return gCost.get(x) + hCost(x);
+            if (!gCost.containsKey(x)) {
+                return Integer.MAX_VALUE;
+            } else {
+                return gCost.get(x) + hCost(x);
+            }
         }
 
         public List<Point> shortestPath() {
@@ -57,8 +60,7 @@ public class Pathfinder {
                     return traceBack(b, parent);
                 }
 
-                final Set<Point> openNeighbours = current.getNeighbours().values()
-                    .filter(Pathfinder.this.points::contains)
+                final Set<Point> openNeighbours = getNeighbours(current)
                     .filter(not(closed::contains))
                     .toSet();
 
@@ -79,5 +81,10 @@ public class Pathfinder {
         private List<Point> traceBack(final Point b, final Map<Point, Point> parent) {
             return StreamEx.iterate(b, parent::get).takeWhile(Objects::nonNull).toList();
         }
+    }
+
+    protected StreamEx<Point> getNeighbours(final Point current) {
+        return current.getNeighbours().values()
+            .filter(Pathfinder.this.points::contains);
     }
 }
