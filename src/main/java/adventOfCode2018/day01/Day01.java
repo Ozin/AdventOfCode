@@ -15,7 +15,7 @@ public class Day01 {
     private static void a() throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(Day01.class.getResourceAsStream("/2018/input01a")))) {
             int sum = br.lines().mapToInt(Integer::parseInt).sum();
-            System.out.printf("Result of 01 A: %d%n", sum);
+            System.out.printf("Result of 01.txt A: %d%n", sum);
         }
     }
 
@@ -28,7 +28,7 @@ public class Day01 {
             for(int i = 0; ; i++) {
                 sum += frequencies[i % frequencies.length];
                 if(intermediates.contains(sum)) {
-                    System.out.printf("Result of 01 B. frequency: %d, iterations: %d%n", sum, i);
+                    System.out.printf("Result of 01.txt B. frequency: %d, iterations: %d%n", sum, i);
                     break;
                 } else {
                     intermediates.add(sum);
