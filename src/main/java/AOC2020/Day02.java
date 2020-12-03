@@ -12,7 +12,6 @@ public class Day02 extends AbstractDay<Day02.Password[]> {
         new Day02().run();
     }
 
-    //5-10 v: vvbvsvtmtvvvvv
     Pattern linePattern = Pattern.compile("^(\\d+)-(\\d+) (.): (.+)$");
 
     @Override
