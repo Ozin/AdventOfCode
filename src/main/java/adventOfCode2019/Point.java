@@ -2,7 +2,7 @@ package adventOfCode2019;
 
 import lombok.NonNull;
 import lombok.Value;
-import lombok.experimental.Wither;
+import lombok.With;
 import one.util.streamex.EntryStream;
 
 @Value
@@ -18,10 +18,10 @@ public class Point {
         this(v.getDx(), v.getDy());
     }
 
-    @Wither
+    @With
     int x;
 
-    @Wither
+    @With
     int y;
 
     public Point addX(final int dX) {
