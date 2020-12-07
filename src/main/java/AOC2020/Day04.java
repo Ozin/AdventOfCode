@@ -30,9 +30,9 @@ public class Day04 extends AbstractDay<List<Day04.Passport>> {
                 || p.getFeatures().size() == 7 && !p.getFeatures().containsKey(Feature.COUNTRY_ID);
         };
 
-        return StreamEx.of(input).
-            filter(isValid).
-            count();
+        return StreamEx.of(input)
+            .filter(isValid)
+            .count();
     }
 
     @Override
@@ -43,9 +43,9 @@ public class Day04 extends AbstractDay<List<Day04.Passport>> {
                 && EntryStream.of(p.getFeatures()).mapKeyValue(Feature::isValidValue).allMatch(b -> b);
         };
 
-        return StreamEx.of(input).
-            filter(isValid).
-            count();
+        return StreamEx.of(input)
+            .filter(isValid)
+            .count();
     }
 
     @Value
