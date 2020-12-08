@@ -4,11 +4,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.stream.Stream;
+import java.util.function.IntUnaryOperator;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import lombok.With;
+import lombok.experimental.WithBy;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 
@@ -83,31 +83,30 @@ public class Day08 extends AbstractDay<Day08.Instruction[]> {
         }
 
         public State apply(final State state) {
-            return state
-                .withAccumulator(command.calcAccumulator(state.getAccumulator(), value))
-                .withIndex(command.calcIndex(state.getIndex(), value));
+            return command.changeState(state, value);
         }
     }
 
     public enum Command {
-        nop((oldValue, newValue) -> oldValue, (oldValue, newValue) -> oldValue + 1),
-        acc(Integer::sum, (oldValue, newValue) -> oldValue + 1),
-        jmp((oldValue, newValue) -> oldValue, Integer::sum);
+        nop((state, value) -> state
+            .withIndexBy(i -> i + 1)
+        ),
+        acc((state, value) -> state
+            .withAccumulatorBy(acc -> acc + value)
+            .withIndexBy(i -> i + 1)
+        ),
+        jmp((state, value) -> state
+            .withIndexBy(i -> i + value)
+        );
 
-        private final BiFunction<Integer, Integer, Integer> accumulator;
-        private final BiFunction<Integer, Integer, Integer> index;
+        private final BiFunction<State, Integer, State> changeStateFunction;
 
-        Command(final BiFunction<Integer, Integer, Integer> accumulator, final BiFunction<Integer, Integer, Integer> index) {
-            this.accumulator = accumulator;
-            this.index = index;
+        Command(final BiFunction<State, Integer, State> changeStateFunction) {
+            this.changeStateFunction = changeStateFunction;
         }
 
-        public int calcAccumulator(final int accumulator, final int value) {
-            return this.accumulator.apply(accumulator, value);
-        }
-
-        public int calcIndex(final int index, final int value) {
-            return this.index.apply(index, value);
+        public State changeState(final State state, final int value) {
+            return this.changeStateFunction.apply(state, value);
         }
     }
 
@@ -117,5 +116,13 @@ public class Day08 extends AbstractDay<Day08.Instruction[]> {
         int index;
         int accumulator;
         boolean terminated;
+
+        public State withIndexBy(final IntUnaryOperator operator) {
+            return withIndex(operator.applyAsInt(getIndex()));
+        }
+
+        public State withAccumulatorBy(final IntUnaryOperator operator) {
+            return withAccumulator(operator.applyAsInt(getAccumulator()));
+        }
     }
 }

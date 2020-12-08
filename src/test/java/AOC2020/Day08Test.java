@@ -24,4 +24,14 @@ public class Day08Test {
 
         assertEquals(new Day08.State(9, 8, true), day08.getB());
     }
+
+    @Test
+    public void aFinal() throws Exception {
+        assertEquals(new Day08.State(458, 1939, false), day08.getA());
+    }
+
+    @Test
+    public void bFinal() throws Exception {
+        assertEquals(new Day08.State(636, 2212, true), day08.getB());
+    }
 }
