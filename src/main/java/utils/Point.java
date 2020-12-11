@@ -1,10 +1,16 @@
 package utils;
 
+import static java.util.function.Predicate.not;
+
 import AOC2019.Direction;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import lombok.NonNull;
 import lombok.Value;
 import lombok.With;
 import one.util.streamex.EntryStream;
+import one.util.streamex.IntStreamEx;
+import one.util.streamex.StreamEx;
 
 @Value
 public class Point {
@@ -48,5 +54,12 @@ public class Point {
             Direction.UP, addY(-1),
             Direction.DOWN, addY(1)
         );
+    }
+
+    public StreamEx<Point> getNeighboursIncludingDiagonal() {
+        return IntStreamEx.range(-1, 2).boxed()
+            .cross(IntStreamEx.range(-1, 2).boxed().toList())
+            .mapKeyValue((x, y) -> this.addX(x).addY(y))
+            .filter(not(this::equals));
     }
 }

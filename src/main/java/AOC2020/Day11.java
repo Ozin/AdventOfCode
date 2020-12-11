@@ -1,86 +1,115 @@
 package AOC2020;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import one.util.streamex.IntStreamEx;
-import one.util.streamex.StreamEx;
+import java.util.function.BiFunction;
+import one.util.streamex.EntryStream;
+import utils.Point;
 
-public class Day11 extends AbstractDay<int[]> {
+public class Day11 extends Abstract2DPuzzle {
     public static void main(final String[] args) {
         new Day11().run();
     }
 
     @Override
-    protected int[] parseInput(final String[] rawInput) throws Exception {
-        return StreamEx.of(rawInput).mapToInt(Integer::parseInt).toArray();
+    protected Object a(final Map<Point, Character> input) throws Exception {
+        return countFinalSeating(input, this::decideSeatA);
     }
 
     @Override
-    protected Object a(final int[] input) throws Exception {
-        final int[] extendedInput = extendInput(input);
-
-
-        final Map<Integer, Long> entries = IntStreamEx.range(extendedInput.length - 1)
-            .map(i -> extendedInput[i + 1] - extendedInput[i])
-            .sorted()
-            .boxed()
-            .runLengths()
-            .toMap();
-        return entries.get(1L) * entries.get(3L);
+    protected Object b(final Map<Point, Character> input) throws Exception {
+        return countFinalSeating(input, this::decideSeatB);
     }
 
-    @Override
-    protected Object b(final int[] input) throws Exception {
-        final int[] extendedInput = extendInput(input);
+    private Object countFinalSeating(final Map<Point, Character> input, final SeatingStrategy seatingStrategy) {
+        Map<Point, Character> old = input;
+        Map<Point, Character> next = input;
+        do {
+            old = next;
+            final Map<Point, Character> finalOld = old;
 
-        final Map<Integer, List<Integer>> graph = new HashMap<>();
-        for (int i = 0; i < extendedInput.length; i++) {
-            for (int j = i + 1; j < i + 4 && j < extendedInput.length; j++) {
-                if (extendedInput[j] - extendedInput[i] <= 3) {
-                    graph.merge(extendedInput[i], List.of(extendedInput[j]), this::mergeList);
+            next = EntryStream.of(finalOld)
+                .mapToValue((p, c) -> seatingStrategy.decideSeat(finalOld, p))
+                .toMap();
+
+        } while (!old.equals(next));
+
+        return next.values().stream()
+            .filter(Character.valueOf('#')::equals)
+            .count();
+    }
+
+    private Character decideSeatA(final Map<Point, Character> map, final Point point) {
+        if (map.get(point) == '.') {
+            return map.get(point);
+        }
+
+        final var neighbours = point.getNeighboursIncludingDiagonal()
+            .map(map::get)
+            .filter(Character.valueOf('#')::equals)
+            .count();
+
+        switch (Math.toIntExact(neighbours)) {
+            case 0:
+                return '#';
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+                return 'L';
+        }
+
+        return map.get(point);
+    }
+
+    private Character decideSeatB(final Map<Point, Character> map, final Point point) {
+        if (map.get(point) == '.') {
+            return map.get(point);
+        }
+
+        var neighbours = 0;
+
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+                if (x == 0 && y == 0) {
+                    continue;
+                }
+
+                Point curPoint = point;
+                while (true) {
+                    curPoint = curPoint.addX(x).addY(y);
+
+                    if (map.get(curPoint) == null) {
+                        break;
+                    }
+
+                    if (map.get(curPoint) == '#') {
+                        neighbours++;
+                        break;
+                    }
+                    
+                    if (map.get(curPoint) == 'L') {
+                        break;
+                    }
                 }
             }
         }
 
-        //return countPaths(new HashMap<>(), graph, 0, 6);
-        return countPaths(new HashMap<>(), graph, extendedInput[0], extendedInput[extendedInput.length - 1]);
-    }
-
-    private int[] extendInput(final int[] input) {
-        Arrays.sort(input);
-        final int[] extendedInput = new int[input.length + 2];
-        System.arraycopy(input, 0, extendedInput, 1, input.length);
-        extendedInput[0] = 0;
-        extendedInput[extendedInput.length - 1] = input[input.length - 1] + 3;
-        return extendedInput;
-    }
-
-    private long countPaths(final Map<Integer, Long> cache, final Map<Integer, List<Integer>> graph, final int start, final int end) {
-        final Long cached = cache.get(start);
-        if (cached != null) {
-            return cached;
+        switch (Math.toIntExact(neighbours)) {
+            case 0:
+                return '#';
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+                return 'L';
         }
 
-        if (start == end) {
-            return 1;
-        }
-
-        final long sum = graph.get(start)
-            .stream()
-            .mapToLong(newStart -> countPaths(cache, graph, newStart, end))
-            .sum();
-
-        cache.put(start, sum);
-
-        return sum;
+        return map.get(point);
     }
 
-    private <T> List<T> mergeList(final List<T> a, final List<T> b) {
-        return Stream.of(a, b).flatMap(List::stream).collect(Collectors.toList());
+    @FunctionalInterface
+    interface SeatingStrategy {
+        Character decideSeat(final Map<Point, Character> map, final Point point);
     }
-
 }
