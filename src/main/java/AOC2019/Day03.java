@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import utils.AbstractDay;
+import utils.Point;
 
 import static java.util.Comparator.comparingInt;
 
@@ -51,8 +53,8 @@ public class Day03 extends AbstractDay<String[][]> {
         int minDist = Integer.MAX_VALUE;
         for (final Point intersection : intersections) {
             final int currentDist = wires.stream()
-                    .mapToInt(wire -> wire.indexOf(intersection))
-                    .sum();
+                .mapToInt(wire -> wire.indexOf(intersection))
+                .sum();
 
             minDist = Math.min(minDist, currentDist);
         }

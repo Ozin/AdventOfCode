@@ -1,8 +1,8 @@
 package AOC2020;
 
 import java.util.Map;
-import one.util.streamex.IntStreamEx;
 import one.util.streamex.LongStreamEx;
+import utils.Point;
 
 public class Day03 extends Abstract2DPuzzle {
     public static void main(final String[] args) {

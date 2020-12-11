@@ -2,6 +2,7 @@ package AOC2019;
 
 import java.util.Map;
 import one.util.streamex.IntStreamEx;
+import utils.Point;
 
 public class Day19 extends AbstractIntcodePuzzle {
     @Override
@@ -24,7 +25,7 @@ public class Day19 extends AbstractIntcodePuzzle {
         final Map<Point, Boolean> map = IntStreamEx.range(foundPoint.getX() - 5, foundPoint.getX() + 110).boxed()
             .cross(IntStreamEx.range(foundPoint.getY() - 5, foundPoint.getY() + 110).boxed().toList())
             .mapKeyValue(Point::new)
-            .filter(p -> p.getX() < foundPoint.getX() || p.getX() > foundPoint.addX(100).getX() ||p.getY() < foundPoint.getY() || p.getY() > foundPoint.addY(100).getY())
+            .filter(p -> p.getX() < foundPoint.getX() || p.getX() > foundPoint.addX(100).getX() || p.getY() < foundPoint.getY() || p.getY() > foundPoint.addY(100).getY())
             .mapToEntry(this::isInBeam)
             .toMap();
 

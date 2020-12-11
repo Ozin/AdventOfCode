@@ -6,6 +6,7 @@ import one.util.streamex.StreamEx;
 import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+import utils.AbstractDay;
 
 public class Day04 extends AbstractDay<int[]> {
 
@@ -25,25 +26,25 @@ public class Day04 extends AbstractDay<int[]> {
     @Override
     protected Object a(final int[] input) throws Exception {
         return IntStreamEx.rangeClosed(input[0], input[1])
-                .mapToObj(Integer::toString)
-                .filter(TWO_ADJACENT_DIGITS)
-                .filter(MONOTONE_INCREASING_DIGITS)
-                .count();
+            .mapToObj(Integer::toString)
+            .filter(TWO_ADJACENT_DIGITS)
+            .filter(MONOTONE_INCREASING_DIGITS)
+            .count();
     }
 
     @Override
     protected Object b(final int[] input) throws Exception {
         return IntStreamEx.rangeClosed(input[0], input[1])
-                .mapToObj(Integer::toString)
-                .filter(TWO_ADJACENT_DIGITS)
-                .filter(MONOTONE_INCREASING_DIGITS)
-                .filter(this::hasExactlyTwoTimesTheSameDigit)
-                .count();
+            .mapToObj(Integer::toString)
+            .filter(TWO_ADJACENT_DIGITS)
+            .filter(MONOTONE_INCREASING_DIGITS)
+            .filter(this::hasExactlyTwoTimesTheSameDigit)
+            .count();
     }
 
     private boolean hasExactlyTwoTimesTheSameDigit(final String number) {
         return StreamEx.of(number.split(""))
-                .runLengths()
-                .anyMatch((key, value) -> value == 2);
+            .runLengths()
+            .anyMatch((key, value) -> value == 2);
     }
 }

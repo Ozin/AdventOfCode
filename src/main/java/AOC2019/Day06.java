@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import utils.AbstractDay;
+import utils.Node;
 
 public class Day06 extends AbstractDay<Node> {
     public static void main(final String[] args) {

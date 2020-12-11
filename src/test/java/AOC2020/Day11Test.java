@@ -1,17 +1,17 @@
 package AOC2020;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class Day10Test {
-    Day10 day = new Day10();
+public class Day11Test {
+    Day11 day = new Day11();
 
     @Test
     public void a1() throws Exception {
-        final int[] input = new int[] {16, 10, 15, 5, 1, 11, 7, 19, 6, 12, 4};
+        day.setInputFilePath("/2020/day11-01.txt");
 
-        final Object result = day.a(input);
+        final Object result = day.getA();
 
         assertEquals(35L, result);
     }

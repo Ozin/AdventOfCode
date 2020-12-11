@@ -3,6 +3,7 @@ package AOC2020;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
+import utils.Point;
 
 @Getter
 public abstract class Abstract2DPuzzle extends AbstractDay<Map<Point, Character>> {

@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import utils.AbstractDay;
+import utils.Point;
+import utils.Vector;
 
 import static java.util.Comparator.comparingDouble;
 import static java.util.function.Predicate.not;
@@ -28,7 +31,9 @@ public class Day10 extends AbstractDay<Set<Point>> {
         final Set<Point> set = new HashSet<>();
         for (int y = 0; y < rawInput.length; y++) {
             for (int x = 0; x < rawInput[y].length(); x++) {
-                if (rawInput[y].charAt(x) == '.') continue;
+                if (rawInput[y].charAt(x) == '.') {
+                    continue;
+                }
 
                 MAX_X = Math.max(MAX_X, x);
                 MAX_Y = Math.max(MAX_Y, y);
@@ -41,10 +46,10 @@ public class Day10 extends AbstractDay<Set<Point>> {
     @Override
     protected Map.Entry<Point, Integer> a(final Set<Point> asteroids) throws Exception {
         final Map<Point, List<Point>> pointsWithDirectSights = StreamEx.of(asteroids)
-                .cross(asteroids)
-                .filterKeyValue((a, b) -> !a.equals(b))
-                .filterKeyValue((a, b) -> !haveDirectSight(a, b, asteroids))
-                .grouping();
+            .cross(asteroids)
+            .filterKeyValue((a, b) -> !a.equals(b))
+            .filterKeyValue((a, b) -> !haveDirectSight(a, b, asteroids))
+            .grouping();
 
 //        for (int y = 0; y <= MAX_Y; y++) {
 //            for (int x = 0; x <= MAX_X; x++) {
@@ -58,9 +63,9 @@ public class Day10 extends AbstractDay<Set<Point>> {
 //        }
 
         return EntryStream.of(pointsWithDirectSights)
-                .mapValues(List::size)
-                .maxByInt(Map.Entry::getValue)
-                .orElseThrow();
+            .mapValues(List::size)
+            .maxByInt(Map.Entry::getValue)
+            .orElseThrow();
     }
 
     @Override
@@ -68,15 +73,15 @@ public class Day10 extends AbstractDay<Set<Point>> {
         final Point laser = a(asteroids).getKey();
 
         final Map<Vector, List<Vector>> sameDirectionMap = StreamEx.of(asteroids)
-                .filter(not(laser::equals))
-                .map(asteroid -> new Vector(laser, asteroid))
-                .groupingBy(Vector::reduce);
+            .filter(not(laser::equals))
+            .map(asteroid -> new Vector(laser, asteroid))
+            .groupingBy(Vector::reduce);
 
         final List<LinkedList<Vector>> sameDirectionsAndSorted = EntryStream.of(sameDirectionMap)
-                .sortedByDouble(entry -> getAngleVector(entry.getKey()))
-                .mapValues(this::toLinkedList)
-                .values()
-                .collect(Collectors.toList());
+            .sortedByDouble(entry -> getAngleVector(entry.getKey()))
+            .mapValues(this::toLinkedList)
+            .values()
+            .collect(Collectors.toList());
 
         final List<Vector> vectors = new ArrayList<>(asteroids.size());
         final Vector laserVector = new Vector(laser);
@@ -102,9 +107,9 @@ public class Day10 extends AbstractDay<Set<Point>> {
     private boolean haveDirectSight(final Point a, final Point b, final Set<Point> asteroids) {
         final Set<Point> lineOfSight = getLineOfSight(a, b);
         return lineOfSight.stream()
-                .filter(not(a::equals))
-                .filter(not(b::equals))
-                .anyMatch(asteroids::contains);
+            .filter(not(a::equals))
+            .filter(not(b::equals))
+            .anyMatch(asteroids::contains);
     }
 
     private Set<Point> getLineOfSight(final Point a, final Point b) {
@@ -113,11 +118,11 @@ public class Day10 extends AbstractDay<Set<Point>> {
         final Vector ab = new Vector(a, b).reduce();
 
         return StreamEx.iterate(source, prev -> prev.add(ab))
-                .takeWhileInclusive(newPoint -> !target.equals(newPoint))
-                .map(Point::new)
-                // .filter(not(a::equals))
-                // .filter(not(b::equals))
-                .toSet();
+            .takeWhileInclusive(newPoint -> !target.equals(newPoint))
+            .map(Point::new)
+            // .filter(not(a::equals))
+            // .filter(not(b::equals))
+            .toSet();
     }
 
     private double getAngleVector(final Vector vector) {

@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.joining;
 
 import java.util.Arrays;
 import one.util.streamex.IntStreamEx;
+import utils.AbstractDay;
 
 public class Day16 extends AbstractDay<int[]> {
 
@@ -28,7 +29,7 @@ public class Day16 extends AbstractDay<int[]> {
     @Override
     protected Object b(final int[] input) throws Exception {
         final int multiplicator = 10000;
-        int[] hugeArray = new int[input.length * multiplicator];
+        final int[] hugeArray = new int[input.length * multiplicator];
         for (int i = 0; i < multiplicator; i++) {
             System.arraycopy(input, 0, hugeArray, i * input.length, input.length);
         }

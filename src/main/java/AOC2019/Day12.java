@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import utils.AbstractDay;
 
 import static org.apache.commons.math3.util.ArithmeticUtils.gcd;
 import static org.apache.commons.math3.util.ArithmeticUtils.lcm;
@@ -26,9 +27,9 @@ public class Day12 extends AbstractDay<List<Moon>> {
         for (int i = 0; i < 1000; i++) {
             final List<Moon> oldInput = input;
             input = StreamEx.of(oldInput)
-                    .map(moon -> moon.applyGravity(oldInput))
-                    .map(Moon::applyVelocity)
-                    .toList();
+                .map(moon -> moon.applyGravity(oldInput))
+                .map(Moon::applyVelocity)
+                .toList();
 
         }
         return StreamEx.of(input).mapToInt(Moon::totalEnergy).sum();
@@ -45,13 +46,19 @@ public class Day12 extends AbstractDay<List<Moon>> {
         for (int i = 1; ; i++) {
             final List<Moon> oldInput = input;
             input = StreamEx.of(oldInput)
-                    .map(moon -> moon.applyGravity(oldInput))
-                    .map(Moon::applyVelocity)
-                    .toList();
+                .map(moon -> moon.applyGravity(oldInput))
+                .map(Moon::applyVelocity)
+                .toList();
 
-            if (Arrays.equals(originalXs, getDimension(input, 0))) cycleX = i;
-            if (Arrays.equals(originalYs, getDimension(input, 1))) cycleY = i;
-            if (Arrays.equals(originalZs, getDimension(input, 2))) cycleZ = i;
+            if (Arrays.equals(originalXs, getDimension(input, 0))) {
+                cycleX = i;
+            }
+            if (Arrays.equals(originalYs, getDimension(input, 1))) {
+                cycleY = i;
+            }
+            if (Arrays.equals(originalZs, getDimension(input, 2))) {
+                cycleZ = i;
+            }
 
             if (cycleX != 0 && cycleY != 0 && cycleZ != 0) {
                 return leastCommonMultiple(cycleX, cycleY, cycleZ);
@@ -63,9 +70,9 @@ public class Day12 extends AbstractDay<List<Moon>> {
         return lcm(lcm(cycleX, cycleY), cycleZ);
     }
 
-    public int[] getDimension(List<Moon> moons, int dimension) {
-        IntStream positions = moons.stream().mapToInt(moon -> moon.getPosition().get(dimension));
-        IntStream velocities = moons.stream().mapToInt(moon -> moon.getVelocity().get(dimension));
+    public int[] getDimension(final List<Moon> moons, final int dimension) {
+        final IntStream positions = moons.stream().mapToInt(moon -> moon.getPosition().get(dimension));
+        final IntStream velocities = moons.stream().mapToInt(moon -> moon.getVelocity().get(dimension));
         return IntStream.concat(positions, velocities).toArray();
     }
 }

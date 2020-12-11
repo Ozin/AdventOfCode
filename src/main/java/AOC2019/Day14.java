@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import utils.AbstractDay;
+import utils.Utils;
 
 public class Day14 extends AbstractDay<Map<String, Reaction>> {
 
@@ -21,15 +23,15 @@ public class Day14 extends AbstractDay<Map<String, Reaction>> {
     @Override
     protected Map<String, Reaction> parseInput(final String[] rawInput) throws Exception {
         final Map<String, Reaction> reactions = StreamEx.of(rawInput)
-                .map(Reaction::new)
-                .mapToEntry(Reaction::getOutput, Function.identity())
-                .mapKeys(Map.Entry::getKey)
-                .toMap();
+            .map(Reaction::new)
+            .mapToEntry(Reaction::getOutput, Function.identity())
+            .mapKeys(Map.Entry::getKey)
+            .toMap();
 
         orderOfBreakdown = EntryStream.of(reactions)
-                .sortedByInt(entry -> -calculateReactionLevel(entry.getValue(), reactions))
-                .keys()
-                .toList();
+            .sortedByInt(entry -> -calculateReactionLevel(entry.getValue(), reactions))
+            .keys()
+            .toList();
 
         return reactions;
     }
@@ -64,17 +66,17 @@ public class Day14 extends AbstractDay<Map<String, Reaction>> {
 
         long lower = 0;
         long higher = baseline;
-        while(true) {
+        while (true) {
             final long average = (lower + higher) / 2;
             final long averageNeed = oreNeedForFuelAmount(average, reactions);
 
-            if(averageNeed < TRILLION) {
+            if (averageNeed < TRILLION) {
                 lower = average;
             } else {
                 higher = average;
             }
 
-            if(Math.abs(lower - higher) <= 1) {
+            if (Math.abs(lower - higher) <= 1) {
                 return lower;
             }
         }
@@ -97,18 +99,19 @@ public class Day14 extends AbstractDay<Map<String, Reaction>> {
         final int reactionAmount = currentReaction.getOutput().getValue();
         final long reactionFactor = (reactionAmount + neededAmount - 1) / reactionAmount;
         EntryStream.of(currentReaction.getInput())
-                .mapValues(theoreticAmount -> reactionFactor * theoreticAmount)
-                .forKeyValue((element, amount) -> summedBreakdown.merge(element, amount, Utils::add));
+            .mapValues(theoreticAmount -> reactionFactor * theoreticAmount)
+            .forKeyValue((element, amount) -> summedBreakdown.merge(element, amount, Utils::add));
     }
 
     public int calculateReactionLevel(final Reaction reaction, final Map<String, Reaction> allReactions) {
         final Set<String> sourceElements = reaction.getInput().keySet();
-        if (sourceElements.stream().allMatch("ORE"::equals))
+        if (sourceElements.stream().allMatch("ORE"::equals)) {
             return 0;
+        }
 
         return StreamEx.of(sourceElements)
-                .mapToInt(element -> 1 + calculateReactionLevel(allReactions.get(element), allReactions))
-                .max()
-                .orElseThrow();
+            .mapToInt(element -> 1 + calculateReactionLevel(allReactions.get(element), allReactions))
+            .max()
+            .orElseThrow();
     }
 }

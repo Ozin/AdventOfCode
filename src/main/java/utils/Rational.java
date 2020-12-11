@@ -1,4 +1,4 @@
-package AOC2019;
+package utils;
 
 import lombok.Value;
 
@@ -20,7 +20,7 @@ public class Rational {
         int a = Math.abs(dividend);
         int b = Math.abs(divisor);
 
-        while(b != 0) {
+        while (b != 0) {
             final int t = b;
             b = a % b;
             a = t;

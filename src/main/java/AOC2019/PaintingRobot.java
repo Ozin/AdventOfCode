@@ -2,6 +2,7 @@ package AOC2019;
 
 import java.util.HashMap;
 import java.util.Map;
+import utils.Point;
 
 import static AOC2019.Direction.UP;
 
@@ -31,14 +32,18 @@ public class PaintingRobot {
 
     public void drive(final Color input) {
         intcodeComputer.addInput(input.ordinal());
-        int output = (int) intcodeComputer.nextOutput();
-        if (intcodeComputer.isDone()) return;
+        final int output = (int) intcodeComputer.nextOutput();
+        if (intcodeComputer.isDone()) {
+            return;
+        }
 
         final Color targetColor = Color.values()[output];
         paint(targetColor);
 
         final boolean turnLeft = intcodeComputer.nextOutput() == 0;
-        if (intcodeComputer.isDone()) return;
+        if (intcodeComputer.isDone()) {
+            return;
+        }
 
         move(turnLeft);
 

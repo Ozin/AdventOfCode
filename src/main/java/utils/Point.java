@@ -1,12 +1,9 @@
-package AOC2020;
+package utils;
 
-import adventOfCode2019.Direction;
-import adventOfCode2019.Vector;
+import AOC2019.Direction;
 import lombok.NonNull;
 import lombok.Value;
 import lombok.With;
-import lombok.experimental.WithBy;
-import lombok.experimental.Wither;
 import one.util.streamex.EntryStream;
 
 @Value

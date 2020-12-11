@@ -1,4 +1,4 @@
-package AOC2019;
+package utils;
 
 import lombok.Value;
 
@@ -7,16 +7,16 @@ public class Vector {
     final int dx;
     final int dy;
 
-    public Vector(int dx, int dy) {
+    public Vector(final int dx, final int dy) {
         this.dx = dx;
         this.dy = dy;
     }
 
-    public Vector(Point p) {
+    public Vector(final Point p) {
         this(p.getX(), p.getY());
     }
 
-    public Vector(Point a, Point b) {
+    public Vector(final Point a, final Point b) {
         this(b.getX() - a.getX(), b.getY() - a.getY());
     }
 
@@ -67,6 +67,6 @@ public class Vector {
     }
 
     public Point toPoint() {
-        return new Point(dx,dy);
+        return new Point(dx, dy);
     }
 }

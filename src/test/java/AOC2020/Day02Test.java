@@ -1,9 +1,7 @@
 package AOC2020;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
-import adventOfCode2019.Day20;
 import org.junit.Test;
 
 public class Day02Test {

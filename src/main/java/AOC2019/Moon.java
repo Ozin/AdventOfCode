@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
+import utils.AbstractDay;
 
 @Value
 @RequiredArgsConstructor
@@ -23,9 +24,9 @@ public class Moon extends AbstractDay.InputEntity {
     public Moon(final String input) {
         final MatchResult matchResult = getMatchResult(input);
         this.position = List.of(
-                Integer.parseInt(matchResult.group(1)),
-                Integer.parseInt(matchResult.group(2)),
-                Integer.parseInt(matchResult.group(3))
+            Integer.parseInt(matchResult.group(1)),
+            Integer.parseInt(matchResult.group(2)),
+            Integer.parseInt(matchResult.group(3))
         );
         this.velocity = List.of(0, 0, 0);
     }
@@ -46,9 +47,9 @@ public class Moon extends AbstractDay.InputEntity {
 
     public Moon applyGravity(final Moon other) {
         final List<Integer> newVelocity = List.of(
-                getAttraction(0, other),
-                getAttraction(1, other),
-                getAttraction(2, other)
+            getAttraction(0, other),
+            getAttraction(1, other),
+            getAttraction(2, other)
         );
 
         return withVelocity(newVelocity);
@@ -79,11 +80,11 @@ public class Moon extends AbstractDay.InputEntity {
     public String toString() {
         // pos=<x=-1, y=-7, z= 3>, vel=<x= 0, y= 2, z= 1>
         return String.format("pos=<x=%2d, y=%2d, z=%2d>, vel=<x=%2d, y=%2d, z=%2d>",
-                position.get(0),
-                position.get(1),
-                position.get(2),
-                velocity.get(0),
-                velocity.get(1),
-                velocity.get(2));
+            position.get(0),
+            position.get(1),
+            position.get(2),
+            velocity.get(0),
+            velocity.get(1),
+            velocity.get(2));
     }
 }

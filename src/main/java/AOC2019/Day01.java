@@ -2,6 +2,7 @@ package AOC2019;
 
 import java.io.IOException;
 import java.util.Arrays;
+import utils.AbstractDay;
 
 public class Day01 extends AbstractDay<int[]> {
     public static void main(final String[] args) throws IOException {

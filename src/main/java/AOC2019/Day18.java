@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import one.util.streamex.EntryStream;
+import utils.Abstract2DPuzzle;
+import utils.Point;
 
 public class Day18 extends Abstract2DPuzzle {
 
@@ -33,9 +35,9 @@ public class Day18 extends Abstract2DPuzzle {
     @Override
     protected Object b(final Map<Point, Character> input) throws Exception {
         reset();
-        Map<Point, Character> alteredMap = new HashMap<>(input);
+        final Map<Point, Character> alteredMap = new HashMap<>(input);
 
-        Point center = getCurrentPositions(alteredMap).iterator().next();
+        final Point center = getCurrentPositions(alteredMap).iterator().next();
         alteredMap.put(center.addY(-1).addX(-1), '@');
         alteredMap.put(center.addY(1).addX(-1), '@');
         alteredMap.put(center.addY(-1).addX(1), '@');

@@ -11,6 +11,7 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
+import utils.AbstractDay;
 
 public class Day22 extends AbstractDay<List<Map.Entry<Day22.ShuffleMethod, Integer>>> {
     @Override
@@ -30,8 +31,8 @@ public class Day22 extends AbstractDay<List<Map.Entry<Day22.ShuffleMethod, Integ
 
     @Override
     protected Object a(final List<Map.Entry<ShuffleMethod, Integer>> input) throws Exception {
-        Function<int[], int[]> function = composeShuffles(input.toArray(Map.Entry[]::new));
-        int[] stack = function.apply(IntStream.range(0, 10007).toArray());
+        final Function<int[], int[]> function = composeShuffles(input.toArray(Map.Entry[]::new));
+        final int[] stack = function.apply(IntStream.range(0, 10007).toArray());
         return indexOf(2019, stack);
     }
 
@@ -57,7 +58,7 @@ public class Day22 extends AbstractDay<List<Map.Entry<Day22.ShuffleMethod, Integ
             return result;
         }
 
-        public int[] cut(final int[] cards, int amount) {
+        public int[] cut(final int[] cards, final int amount) {
             final int length = cards.length;
             final int[] result = new int[length];
             for (int i = 0; i < length; i++) {
@@ -66,7 +67,7 @@ public class Day22 extends AbstractDay<List<Map.Entry<Day22.ShuffleMethod, Integ
             return result;
         }
 
-        public int[] increment(final int[] cards, int amount) {
+        public int[] increment(final int[] cards, final int amount) {
             final int length = cards.length;
             final int[] result = new int[length];
             for (int i = 0; i < length; i++) {
@@ -97,7 +98,7 @@ public class Day22 extends AbstractDay<List<Map.Entry<Day22.ShuffleMethod, Integ
         return methods.reduce(Function::andThen).orElseThrow();
     }
 
-    public static int indexOf(int needle, int[] haystack) {
+    public static int indexOf(final int needle, final int[] haystack) {
         for (int i = 0; i < haystack.length; i++) {
             if (haystack[i] == needle) {
                 return i;

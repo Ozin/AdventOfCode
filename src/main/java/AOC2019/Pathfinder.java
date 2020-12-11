@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import one.util.streamex.StreamEx;
+import utils.Point;
 
 @RequiredArgsConstructor
 public class Pathfinder {
@@ -35,11 +36,11 @@ public class Pathfinder {
             this.b = b;
         }
 
-        public int hCost(Point x) {
+        public int hCost(final Point x) {
             return x.manhattenDistance(b);
         }
 
-        public int fCost(Point x) {
+        public int fCost(final Point x) {
             if (!gCost.containsKey(x)) {
                 return Integer.MAX_VALUE;
             } else {

@@ -1,4 +1,4 @@
-package AOC2019;
+package utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,8 +18,8 @@ public class Node {
 
     public Stream<Node> flatten() {
         return Stream.concat(
-                Stream.of(this),
-                children.stream().flatMap(Node::flatten)
+            Stream.of(this),
+            children.stream().flatMap(Node::flatten)
         );
     }
 
@@ -27,7 +27,7 @@ public class Node {
         final List<Node> parents = new ArrayList<>();
         Node node = this;
 
-        while(node.getParent() != null) {
+        while (node.getParent() != null) {
             parents.add(node);
             node = node.getParent();
         }

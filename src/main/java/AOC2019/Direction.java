@@ -1,6 +1,7 @@
 package AOC2019;
 
 import one.util.streamex.StreamEx;
+import utils.Point;
 
 public enum Direction {
     UP("^"),
@@ -33,7 +34,7 @@ public enum Direction {
             .orElseThrow();
     }
 
-    public Point continueStraight(Point p) {
+    public Point continueStraight(final Point p) {
         switch (this) {
             case UP:
                 return p.addY(-1);

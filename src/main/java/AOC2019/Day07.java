@@ -4,6 +4,7 @@ import one.util.streamex.StreamEx;
 
 import java.util.Arrays;
 import java.util.Map;
+import utils.Utils;
 
 public class Day07 extends AbstractIntcodePuzzle {
 
@@ -14,25 +15,25 @@ public class Day07 extends AbstractIntcodePuzzle {
     @Override
     protected Object a(final long[] program) throws Exception {
         return StreamEx.of(Utils.permutation("01234"))
-                .map(this::getPhaseSettings)
-                .mapToEntry(phaseSettings -> runAmplifiers(program, phaseSettings))
-                .mapKeys(Arrays::toString)
-                // .peek(System.out::println)
-                .maxByLong(Map.Entry::getValue)
-                .orElseThrow()
-                .getValue();
+            .map(this::getPhaseSettings)
+            .mapToEntry(phaseSettings -> runAmplifiers(program, phaseSettings))
+            .mapKeys(Arrays::toString)
+            // .peek(System.out::println)
+            .maxByLong(Map.Entry::getValue)
+            .orElseThrow()
+            .getValue();
     }
 
     @Override
     protected Object b(final long[] program) throws Exception {
         return StreamEx.of(Utils.permutation("56789"))
-                .map(this::getPhaseSettings)
-                .mapToEntry(phaseSettings -> runAmplifiersWithFeedbackLoop(program, phaseSettings))
-                .mapKeys(Arrays::toString)
-                // .peek(System.out::println)
-                .maxByLong(Map.Entry::getValue)
-                .orElseThrow()
-                .getValue();
+            .map(this::getPhaseSettings)
+            .mapToEntry(phaseSettings -> runAmplifiersWithFeedbackLoop(program, phaseSettings))
+            .mapKeys(Arrays::toString)
+            // .peek(System.out::println)
+            .maxByLong(Map.Entry::getValue)
+            .orElseThrow()
+            .getValue();
     }
 
     private int[] getPhaseSettings(final String phaseString) {
@@ -44,7 +45,7 @@ public class Day07 extends AbstractIntcodePuzzle {
     private long runAmplifiers(final long[] program, final int... phaseSettings) {
         long acc = 0;
         for (final int phaseSetting : phaseSettings) {
-            acc = new IntcodeComputer(program, new long[]{phaseSetting, acc}).nextOutput();
+            acc = new IntcodeComputer(program, new long[] {phaseSetting, acc}).nextOutput();
         }
         return acc;
     }
@@ -55,7 +56,7 @@ public class Day07 extends AbstractIntcodePuzzle {
 
         long output = 0;
         for (int i = 0; i < amplifiers.length; i++) {
-            amplifiers[i] = new IntcodeComputer(program, new long[]{phaseSettings[i], output});
+            amplifiers[i] = new IntcodeComputer(program, new long[] {phaseSettings[i], output});
             output = amplifiers[i].nextOutput();
         }
 

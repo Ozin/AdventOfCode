@@ -1,5 +1,7 @@
 package AOC2019;
 
+import utils.Point;
+
 public class Day15 extends AbstractIntcodePuzzle {
 
     @Override

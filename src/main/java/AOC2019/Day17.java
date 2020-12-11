@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
+import utils.Point;
 
 public class Day17 extends AbstractIntcodePuzzle {
     @Override
@@ -65,9 +66,9 @@ public class Day17 extends AbstractIntcodePuzzle {
     }
 
     private String getLine(final IntcodeComputer intcodeComputer) {
-        ArrayList<Long> returnValues = new ArrayList<>();
+        final ArrayList<Long> returnValues = new ArrayList<>();
         while (true) {
-            long nextOutput = intcodeComputer.nextOutput();
+            final long nextOutput = intcodeComputer.nextOutput();
 
             if (nextOutput == 10 || intcodeComputer.isDone()) {
                 break;

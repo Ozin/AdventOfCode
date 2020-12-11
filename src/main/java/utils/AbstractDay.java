@@ -1,4 +1,4 @@
-package AOC2019;
+package utils;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -38,11 +38,11 @@ public abstract class AbstractDay<T> {
         }
     }
 
-    protected Object getA() throws Exception {
+    public Object getA() throws Exception {
         return a(getInput());
     }
 
-    protected Object getB() throws Exception {
+    public Object getB() throws Exception {
         return b(getInput());
     }
 

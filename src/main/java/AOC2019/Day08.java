@@ -6,6 +6,7 @@ import one.util.streamex.StreamEx;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
+import utils.AbstractDay;
 
 public class Day08 extends AbstractDay<int[][]> {
     //public final int WIDTH = 2;//25;
@@ -39,9 +40,9 @@ public class Day08 extends AbstractDay<int[][]> {
     protected Object a(final int[][] layers) throws Exception {
 
         final Map<Integer, Long> layerWithFewest0 = StreamEx.of(layers)
-                .map(this::getIntCount)
-                .minByLong(map -> map.getOrDefault(0, Long.MIN_VALUE))
-                .orElseThrow();
+            .map(this::getIntCount)
+            .minByLong(map -> map.getOrDefault(0, Long.MIN_VALUE))
+            .orElseThrow();
 
         return layerWithFewest0.get(1) * layerWithFewest0.get(2);
     }
@@ -57,17 +58,19 @@ public class Day08 extends AbstractDay<int[][]> {
             final int[] currentLayer = layers[layerIndex];
 
             for (int i = 0; i < currentLayer.length; i++) {
-                if (currentLayer[i] == 2) continue;
+                if (currentLayer[i] == 2) {
+                    continue;
+                }
 
                 result[i] = currentLayer[i];
             }
         }
 
         return "\n" + Arrays.stream(result)
-                .mapToObj(Integer::toString)
-                .collect(Collectors.joining(""))
-                .replaceAll(String.format("(\\d{%d})", WIDTH), "$1\n")
-                .replace("1", "#")
-                .replace("0", " ");
+            .mapToObj(Integer::toString)
+            .collect(Collectors.joining(""))
+            .replaceAll(String.format("(\\d{%d})", WIDTH), "$1\n")
+            .replace("1", "#")
+            .replace("0", " ");
     }
 }

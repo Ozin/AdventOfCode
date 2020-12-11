@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
+import utils.Abstract2DPuzzle;
+import utils.Point;
 
 public class Day20 extends Abstract2DPuzzle {
 
@@ -34,7 +36,7 @@ public class Day20 extends Abstract2DPuzzle {
             .append(end)
             .toSet();
 
-        List<Point> shortestPath = new PathfinderWithPortals(paths, portals).findShortestPath(start, end).orElseThrow();
+        final List<Point> shortestPath = new PathfinderWithPortals(paths, portals).findShortestPath(start, end).orElseThrow();
 
         shortestPath.forEach(p -> input.put(p, '+'));
         printGame(input);
@@ -89,7 +91,7 @@ public class Day20 extends Abstract2DPuzzle {
 //                .map(portals::get)
 //                .toSet();
 
-            if(portals.containsKey(current)) {
+            if (portals.containsKey(current)) {
                 return normalNeighbours.append(portals.get(current));
             } else {
                 return normalNeighbours;

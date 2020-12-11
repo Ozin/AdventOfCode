@@ -3,6 +3,7 @@ package AOC2019;
 import org.junit.Test;
 
 import java.util.Map;
+import utils.Point;
 
 import static org.junit.Assert.assertEquals;
 
@@ -53,11 +54,11 @@ public class Day10Test {
     public void b1() throws Exception {
         day.setInputFilePath("/2019/day10-05.txt");
 
-        assertEquals(new Point(8,2), day.getB());
+        assertEquals(new Point(8, 2), day.getB());
     }
 
     @Test
     public void bFinal() throws Exception {
-        assertEquals(new Point(5,4), day.getB());
+        assertEquals(new Point(5, 4), day.getB());
     }
 }

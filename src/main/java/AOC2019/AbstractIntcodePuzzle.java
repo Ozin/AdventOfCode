@@ -1,6 +1,7 @@
 package AOC2019;
 
 import java.util.Arrays;
+import utils.AbstractDay;
 
 public abstract class AbstractIntcodePuzzle extends AbstractDay<long[]> {
 

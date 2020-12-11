@@ -1,4 +1,4 @@
-package AOC2019;
+package utils;
 
 import java.util.ArrayList;
 import java.util.function.Function;
@@ -48,11 +48,11 @@ public class Utils {
         return res;
     }
 
-    public static Function<Integer, Integer> multiply(int factor) {
+    public static Function<Integer, Integer> multiply(final int factor) {
         return otherFactor -> factor * otherFactor;
     }
 
-    public static Function<Long, Long> multiply(long factor) {
+    public static Function<Long, Long> multiply(final long factor) {
         return otherFactor -> factor * otherFactor;
     }
 
