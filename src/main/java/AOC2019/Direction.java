@@ -35,15 +35,19 @@ public enum Direction {
     }
 
     public Point continueStraight(final Point p) {
+        return continueStraight(p, 1);
+    }
+
+    public Point continueStraight(final Point p, final int amount) {
         switch (this) {
             case UP:
-                return p.addY(-1);
+                return p.addY(-amount);
             case RIGHT:
-                return p.addX(1);
+                return p.addX(amount);
             case DOWN:
-                return p.addY(1);
+                return p.addY(amount);
             case LEFT:
-                return p.addX(-1);
+                return p.addX(-amount);
             default:
                 throw new UnsupportedOperationException("Direction " + this + " is not supported");
         }

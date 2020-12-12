@@ -69,4 +69,20 @@ public class Vector {
     public Point toPoint() {
         return new Point(dx, dy);
     }
+
+    public Vector turn(final boolean clockwise, final int amount) {
+        if (amount == 0) {
+            return this;
+        }
+
+        return turn(clockwise).turn(clockwise, amount - 1);
+    }
+
+    public Vector turn(final boolean clockwise) {
+        if (clockwise) {
+            return new Vector(dy, -dx);
+        } else {
+            return new Vector(-dy, dx);
+        }
+    }
 }
