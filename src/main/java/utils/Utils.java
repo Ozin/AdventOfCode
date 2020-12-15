@@ -63,4 +63,14 @@ public class Utils {
     public static Long add(final Long addend1, final Long addend2) {
         return addend1 + addend2;
     }
+
+    public static Long gcd(long a, long b) {
+        while (b != 0) {
+            final long t = b;
+            b = a % b;
+            a = t;
+        }
+
+        return a;
+    }
 }
