@@ -1,13 +1,21 @@
 package AOC2020;
 
+import lombok.Value;
+import one.util.streamex.EntryStream;
+import one.util.streamex.IntStreamEx;
+import one.util.streamex.StreamEx;
+import utils.Indexed;
+import utils.Range;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import lombok.Value;
-import one.util.streamex.IntStreamEx;
-import one.util.streamex.StreamEx;
+
+import static java.util.function.Predicate.not;
 
 public class Day16 extends AbstractDay<Day16.Notes> {
     public static void main(final String[] args) {
@@ -47,21 +55,53 @@ public class Day16 extends AbstractDay<Day16.Notes> {
     protected Object b(final Notes input) throws Exception {
         final Property[] properties = input.getProperties();
         final List<int[]> validTickets = getValidTickets(input);
+        var fieldColumns = StreamEx.of(getFieldColumns(validTickets))
+            .map(Indexed.map())
+            .cross(properties)
+            .invert()
+            .filterKeyValue((prop, column) -> columnIsValid(column.getValue(), prop))
+            .grouping();
 
-        for (final Property property : properties) {
-            final int[] possibleColumns = IntStreamEx.range(properties.length)
-                .filter(columnIndex -> property.isValidColumn(validTickets, columnIndex))
-                .toArray();
+        final Map<Property, Integer> propertyColumnIndexes = new HashMap<>();
 
-            continue;
+        while (!fieldColumns.isEmpty()) {
+            final Map.Entry<Property, List<Indexed<int[]>>> oneColumn = EntryStream.of(fieldColumns)
+                .findFirst(e -> e.getValue().size() == 1).orElseThrow();
+
+            final int specifiedIndex = oneColumn.getValue().get(0).getIndex();
+            propertyColumnIndexes.put(oneColumn.getKey(), specifiedIndex);
+
+            fieldColumns = EntryStream.of(fieldColumns)
+                .filterKeys(not(oneColumn.getKey()::equals))
+                .mapValues(list -> list.stream()
+                    .filter(indexed -> indexed.getIndex() != specifiedIndex)
+                    .collect(Collectors.toList()))
+                .toMap();
         }
 
-        return null;
+        return EntryStream.of(propertyColumnIndexes)
+            .filterKeys(p -> p.getName().startsWith("departure "))
+            .values()
+            .mapToLong(index -> input.ownTicket[index])
+            .reduce((a, b) -> a * b)
+            .orElseThrow();
     }
 
-    private boolean columnIsValid(final List<int[]> validTickets, final Property property, final int columnIndex) {
-        return StreamEx.of(validTickets)
-            .allMatch(ticket -> property.isValidValue(ticket[columnIndex]));
+    private int[][] getFieldColumns(final List<int[]> validTickets) {
+        final int[][] columns = new int[validTickets.get(0).length][validTickets.size()];
+        for (int ticketIndex = 0; ticketIndex < validTickets.size(); ticketIndex++) {
+            final int[] currentTicket = validTickets.get(ticketIndex);
+            for (int fieldIndex = 0; fieldIndex < currentTicket.length; fieldIndex++) {
+                columns[fieldIndex][ticketIndex] = currentTicket[fieldIndex];
+            }
+        }
+
+        return columns;
+    }
+
+    private boolean columnIsValid(final int[] column, final Property property) {
+        return IntStreamEx.of(column)
+            .allMatch(property::isValidValue);
     }
 
     private List<int[]> getValidTickets(final Notes input) {
@@ -72,8 +112,27 @@ public class Day16 extends AbstractDay<Day16.Notes> {
     }
 
     public boolean isValidTicket(final int[] fields, final Property[] properties) {
-        return StreamEx.of(properties)
-            .allMatch(property -> IntStream.of(fields).anyMatch(property::isValidValue));
+        for (final int field : fields) {
+            if (!isValidField(properties, field)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    int wrongCount = 0;
+
+    private boolean isValidField(final Property[] properties, final int field) {
+        for (final Property property : properties) {
+            if (property.isValidValue(field)) {
+                return true;
+            }
+        }
+
+        wrongCount += field;
+
+        return false;
     }
 
     @Value
@@ -95,33 +154,8 @@ public class Day16 extends AbstractDay<Day16.Notes> {
         }
 
         public boolean isValidValue(final int value) {
-            final boolean isValid = StreamEx.of(ranges).anyMatch(range -> range.inBetween(value));
-            return isValid;
-        }
-
-        public boolean isValidColumn(final List<int[]> tickets, final int column) {
-            final List<Boolean> collect = tickets.stream()
-                .map(ticket -> isValidValue(ticket[column])).collect(Collectors.toList());
-            return collect.stream().allMatch(b -> b);
+            return StreamEx.of(ranges).anyMatch(range -> range.inBetween(value));
         }
     }
 
-    @Value
-    private static class Range {
-        int lower;
-        int upper;
-
-        public Range(final String range) {
-            this(range.split("-"));
-        }
-
-        public Range(final String[] strings) {
-            this.lower = Integer.parseInt(strings[0]);
-            this.upper = Integer.parseInt(strings[1]);
-        }
-
-        public boolean inBetween(final int value) {
-            return lower <= value && value <= upper;
-        }
-    }
 }
