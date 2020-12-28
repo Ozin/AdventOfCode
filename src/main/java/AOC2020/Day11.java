@@ -1,9 +1,10 @@
 package AOC2020;
 
-import java.util.Map;
-import java.util.function.BiFunction;
 import one.util.streamex.EntryStream;
+import utils.Abstract2DPuzzle;
 import utils.Point;
+
+import java.util.Map;
 
 public class Day11 extends Abstract2DPuzzle {
     public static void main(final String[] args) {
@@ -87,7 +88,7 @@ public class Day11 extends Abstract2DPuzzle {
                         neighbours++;
                         break;
                     }
-                    
+
                     if (map.get(curPoint) == 'L') {
                         break;
                     }

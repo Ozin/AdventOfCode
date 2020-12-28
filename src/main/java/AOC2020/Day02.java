@@ -1,11 +1,13 @@
 package AOC2020;
 
+import lombok.Value;
+import one.util.streamex.StreamEx;
+import utils.AbstractDay;
+
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-import lombok.Value;
-import one.util.streamex.StreamEx;
 
 public class Day02 extends AbstractDay<Day02.Password[]> {
     public static void main(final String[] args) {

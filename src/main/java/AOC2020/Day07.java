@@ -1,12 +1,14 @@
 package AOC2020;
 
+import lombok.Value;
+import one.util.streamex.EntryStream;
+import one.util.streamex.StreamEx;
+import utils.AbstractDay;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lombok.Value;
-import one.util.streamex.EntryStream;
-import one.util.streamex.StreamEx;
 
 public class Day07 extends AbstractDay<Map<String, Day07.Bag>> {
     public static void main(final String[] args) {

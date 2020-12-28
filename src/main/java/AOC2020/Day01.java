@@ -1,6 +1,7 @@
 package AOC2020;
 
-import java.util.Arrays;
+import utils.AbstractDay;
+
 import java.util.stream.Stream;
 
 public class Day01 extends AbstractDay<int[]> {

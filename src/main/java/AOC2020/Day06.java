@@ -1,10 +1,12 @@
 package AOC2020;
 
+import one.util.streamex.StreamEx;
+import utils.AbstractDay;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
-import one.util.streamex.StreamEx;
 
 public class Day06 extends AbstractDay<String> {
     public static void main(final String[] args) {

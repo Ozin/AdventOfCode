@@ -1,16 +1,14 @@
 package AOC2020;
 
-import static java.util.function.Predicate.not;
+import one.util.streamex.StreamEx;
+import utils.AbstractDay;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.LongPredicate;
-import java.util.function.Predicate;
-import one.util.streamex.EntryStream;
-import one.util.streamex.LongStreamEx;
-import one.util.streamex.StreamEx;
+
+import static java.util.function.Predicate.not;
 
 public class Day13 extends AbstractDay<Entry<Integer, String[]>> {
     public static void main(final String[] args) {

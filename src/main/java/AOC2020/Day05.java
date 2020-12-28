@@ -1,14 +1,13 @@
 package AOC2020;
 
-import static java.util.function.Predicate.not;
+import lombok.Value;
+import one.util.streamex.IntStreamEx;
+import utils.AbstractDay;
 
 import java.util.Set;
 import java.util.stream.Stream;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Value;
-import one.util.streamex.IntStreamEx;
-import one.util.streamex.StreamEx;
+
+import static java.util.function.Predicate.not;
 
 public class Day05 extends AbstractDay<Day05.Seat[]> {
     public static void main(final String[] args) {

@@ -1,6 +1,10 @@
 package AOC2020;
 
-import static java.util.function.Predicate.not;
+import lombok.Value;
+import one.util.streamex.LongStreamEx;
+import one.util.streamex.StreamEx;
+import utils.AbstractDay;
+import utils.Indexed;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,10 +13,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import lombok.Value;
-import one.util.streamex.LongStreamEx;
-import one.util.streamex.StreamEx;
-import utils.Indexed;
+
+import static java.util.function.Predicate.not;
 
 public class Day14 extends AbstractDay<String[]> {
     public static void main(final String[] args) {

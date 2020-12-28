@@ -1,15 +1,15 @@
 package AOC2020;
 
-import java.util.ArrayList;
+import one.util.streamex.IntStreamEx;
+import one.util.streamex.StreamEx;
+import utils.AbstractDay;
+
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import one.util.streamex.IntStreamEx;
-import one.util.streamex.StreamEx;
 
 public class Day10 extends AbstractDay<int[]> {
     public static void main(final String[] args) {

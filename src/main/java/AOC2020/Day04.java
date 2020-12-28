@@ -1,15 +1,16 @@
 package AOC2020;
 
+import lombok.Value;
+import one.util.streamex.EntryStream;
+import one.util.streamex.StreamEx;
+import utils.AbstractDay;
+
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.swing.text.html.ListView;
-import lombok.Value;
-import one.util.streamex.EntryStream;
-import one.util.streamex.StreamEx;
 
 public class Day04 extends AbstractDay<List<Day04.Passport>> {
     public static void main(final String[] args) {

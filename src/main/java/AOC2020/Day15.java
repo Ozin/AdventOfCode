@@ -1,20 +1,10 @@
 package AOC2020;
 
-import static java.util.function.Predicate.not;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import lombok.Value;
-import one.util.streamex.LongStreamEx;
 import one.util.streamex.StreamEx;
-import utils.Indexed;
+import utils.AbstractDay;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Day15 extends AbstractDay<int[]> {
     public static void main(final String[] args) {

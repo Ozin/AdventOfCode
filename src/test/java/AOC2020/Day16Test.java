@@ -1,8 +1,8 @@
 package AOC2020;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class Day16Test {
     final Day16 day = new Day16();
@@ -21,5 +21,12 @@ public class Day16Test {
         final Object result = day.getA();
 
         assertEquals(26026, result);
+    }
+
+    @Test
+    public void bFinal() throws Exception {
+        final Object result = day.getB();
+
+        assertEquals(1305243193339L, result);
     }
 }

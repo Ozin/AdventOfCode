@@ -2,6 +2,7 @@ package AOC2020;
 
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
+import utils.AbstractDay;
 
 public class Day09 extends AbstractDay<long[]> {
     public static void main(final String[] args) {

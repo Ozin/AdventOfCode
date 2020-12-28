@@ -1,12 +1,11 @@
 package AOC2020;
 
 import AOC2019.Direction;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.stream.Stream;
-import lombok.Value;
+import utils.AbstractDay;
 import utils.Point;
 import utils.Vector;
+
+import java.util.stream.Stream;
 
 public class Day12 extends AbstractDay<String[][]> {
     public static void main(final String[] args) {
@@ -16,7 +15,7 @@ public class Day12 extends AbstractDay<String[][]> {
     @Override
     protected String[][] parseInput(final String[] rawInput) throws Exception {
         return Stream.of(rawInput)
-            .map(s -> new String[] {s.substring(0, 1), s.substring(1)})
+            .map(s -> new String[]{s.substring(0, 1), s.substring(1)})
             .toArray(String[][]::new);
     }
 

@@ -1,16 +1,17 @@
 package AOC2020;
 
+import lombok.AllArgsConstructor;
+import lombok.Value;
+import lombok.With;
+import one.util.streamex.IntStreamEx;
+import one.util.streamex.StreamEx;
+import utils.AbstractDay;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.IntUnaryOperator;
-import lombok.AllArgsConstructor;
-import lombok.Value;
-import lombok.With;
-import lombok.experimental.WithBy;
-import one.util.streamex.IntStreamEx;
-import one.util.streamex.StreamEx;
 
 public class Day08 extends AbstractDay<Day08.Instruction[]> {
     public static void main(final String[] args) {
