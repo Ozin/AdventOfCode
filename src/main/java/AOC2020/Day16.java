@@ -151,7 +151,12 @@ public class Day16 extends AbstractDay<Day16.Notes> {
         public Property(final String property) {
             final String[] first = property.split(": ");
             this.name = first[0];
-            this.ranges = StreamEx.of(first[1].split(" or ")).map(Range::new).toArray(Range[]::new);
+            this.ranges = StreamEx.of(first[1].split(" or ")).map(this::rangeOf).toArray(Range[]::new);
+        }
+
+        private Range rangeOf(final String range) {
+            final String[] split = range.split("-");
+            return new Range(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
         }
 
         public boolean isValidValue(final int value) {

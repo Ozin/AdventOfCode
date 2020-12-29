@@ -58,8 +58,15 @@ public abstract class AbstractDay<T> {
     }
 
     private String defaultInputFile() {
-        return String.format("/2019/%02d.txt", dayNumber());
+
+        return String.format("/%d/%02d.txt", yearNumber(), dayNumber());
     }
+
+    protected int yearNumber() {
+        return Integer.parseInt(getClass().getPackageName().substring(3));
+    }
+
+    ;
 
     private int dayNumber() {
         return Integer.parseInt(getClass().getSimpleName().substring(3));
