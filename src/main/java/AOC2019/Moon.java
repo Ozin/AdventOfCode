@@ -1,8 +1,9 @@
 package AOC2019;
 
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
-import lombok.experimental.Wither;
+import lombok.With;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 import utils.AbstractDay;
@@ -14,11 +15,12 @@ import java.util.regex.Pattern;
 
 @Value
 @RequiredArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class Moon extends AbstractDay.InputEntity {
-    @Wither
+    @With
     private final List<Integer> velocity;
 
-    @Wither
+    @With
     private final List<Integer> position;
 
     public Moon(final String input) {
