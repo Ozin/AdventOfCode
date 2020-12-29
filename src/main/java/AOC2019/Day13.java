@@ -1,10 +1,10 @@
 package AOC2019;
 
 import one.util.streamex.IntStreamEx;
+import utils.Point;
 
 import java.util.HashMap;
 import java.util.Map;
-import utils.Point;
 
 import static java.util.function.Predicate.not;
 
@@ -33,7 +33,7 @@ public class Day13 extends AbstractIntcodePuzzle {
     @Override
     protected Object b(final long[] program) throws Exception {
         program[0] = 2;
-        final IntcodeComputer intcodeComputer = new IntcodeComputer(program, new long[] {0});
+        final IntcodeComputer intcodeComputer = new IntcodeComputer(program, new long[]{0});
 
         final Map<Point, Long> gameState = mapOutput(initScreen(intcodeComputer));
         while (!intcodeComputer.isDone()) {

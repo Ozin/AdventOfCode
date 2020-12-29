@@ -1,15 +1,10 @@
 package AOC2019;
 
 import one.util.streamex.StreamEx;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
 import utils.AbstractDay;
 import utils.Point;
+
+import java.util.*;
 
 import static java.util.Comparator.comparingInt;
 

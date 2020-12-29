@@ -26,7 +26,7 @@ public class SummedAreaTable {
     private int getSum(Point point) {
         Integer value = summedTable.get(point);
 
-        if(point.getY() < 0 || point.getX() < 0) {
+        if (point.getY() < 0 || point.getX() < 0) {
             return 0;
         }
 
@@ -37,7 +37,7 @@ public class SummedAreaTable {
             for (int x = 0; x < point.getX(); x++) {
                 Integer integer = originTable.get(point.addX(-x));
 
-                if(integer == null) {
+                if (integer == null) {
                     throw new NullPointerException("Could not find " + point.addX(-x));
                 }
 

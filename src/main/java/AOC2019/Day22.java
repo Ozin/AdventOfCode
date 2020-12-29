@@ -1,17 +1,16 @@
 package AOC2019;
 
-import static AOC2019.Day22.ShuffleMethod.CUT;
-import static AOC2019.Day22.ShuffleMethod.INCREMENT;
-import static AOC2019.Day22.ShuffleMethod.NEW_STACK;
+import one.util.streamex.EntryStream;
+import one.util.streamex.StreamEx;
+import utils.AbstractDay;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.IntStream;
-import one.util.streamex.EntryStream;
-import one.util.streamex.StreamEx;
-import utils.AbstractDay;
+
+import static AOC2019.Day22.ShuffleMethod.*;
 
 public class Day22 extends AbstractDay<List<Map.Entry<Day22.ShuffleMethod, Integer>>> {
     @Override

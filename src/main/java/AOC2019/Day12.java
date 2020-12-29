@@ -1,14 +1,13 @@
 package AOC2019;
 
 import one.util.streamex.StreamEx;
+import utils.AbstractDay;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import utils.AbstractDay;
 
-import static org.apache.commons.math3.util.ArithmeticUtils.gcd;
 import static org.apache.commons.math3.util.ArithmeticUtils.lcm;
 
 public class Day12 extends AbstractDay<List<Moon>> {

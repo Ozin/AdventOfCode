@@ -18,9 +18,9 @@ public class Day02 {
     }
 
     private static void b(String[] ids) {
-        for(int i = 0; i < ids.length; i++) {
-            for(int j = i + 1; j < ids.length; j++) {
-                if(distanceOfOne(ids[i], ids[j])) {
+        for (int i = 0; i < ids.length; i++) {
+            for (int j = i + 1; j < ids.length; j++) {
+                if (distanceOfOne(ids[i], ids[j])) {
                     System.out.printf("Result of 02 B: %n    %s%n    %s%n", ids[i], ids[j]);
                 }
             }
@@ -37,8 +37,8 @@ public class Day02 {
 
     private static boolean distanceOfOne(char[] a, char[] b) {
         boolean distanceIsOne = false;
-        for(int i = 0; i < a.length; i++) {
-            if(distanceIsOne && a[i] != b[i]) {
+        for (int i = 0; i < a.length; i++) {
+            if (distanceIsOne && a[i] != b[i]) {
                 return false;
             } else if (a[i] != b[i]) {
                 distanceIsOne = true;
@@ -67,10 +67,10 @@ public class Day02 {
 
     private static boolean containsNTimesSameLetter(int times, String id) {
         return StreamEx.split(id, "")
-                .sorted()
-                .runLengths()
-                .mapToLong(Map.Entry::getValue)
-                .anyMatch(i -> i == times);
+            .sorted()
+            .runLengths()
+            .mapToLong(Map.Entry::getValue)
+            .anyMatch(i -> i == times);
     }
 
 

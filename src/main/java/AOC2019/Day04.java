@@ -2,11 +2,11 @@ package AOC2019;
 
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
+import utils.AbstractDay;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import utils.AbstractDay;
 
 public class Day04 extends AbstractDay<int[]> {
 

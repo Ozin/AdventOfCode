@@ -27,8 +27,8 @@ public class Day14 {
             final int scoreB = scores.get(indexB);
 
             Stream.of(Integer.toString(scoreA + scoreB).split(""))
-                    .map(Integer::parseInt)
-                    .forEach(scores::add);
+                .map(Integer::parseInt)
+                .forEach(scores::add);
 
             indexA = (indexA + scoreA + 1) % scores.size();
             indexB = (indexB + scoreB + 1) % scores.size();
@@ -60,8 +60,8 @@ public class Day14 {
             final int scoreB = scores.get(indexB);
 
             Stream.of(Integer.toString(scoreA + scoreB).split(""))
-                    .map(Integer::parseInt)
-                    .forEach(scores::add);
+                .map(Integer::parseInt)
+                .forEach(scores::add);
 
             indexA = (indexA + scoreA + 1) % scores.size();
             indexB = (indexB + scoreB + 1) % scores.size();

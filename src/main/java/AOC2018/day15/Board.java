@@ -4,11 +4,7 @@ import lombok.extern.java.Log;
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -35,12 +31,12 @@ public class Board {
 
         for (int y = 0; y < units.length; y++) {
             for (int x = 0; x < units[y].length; x++) {
-                Unit currentUnit = units[y][x];
+                final Unit currentUnit = units[y][x];
                 if (!IS_LIVING_CREATURE.test(currentUnit)) {
                     continue;
                 }
 
-                Optional<Map.Entry<Unit, List<PathCell>>> getPathToNextEnemy = getPathToNextEnemy(currentUnit);
+                final Optional<Map.Entry<Unit, List<PathCell>>> getPathToNextEnemy = getPathToNextEnemy(currentUnit);
                 if (getPathToNextEnemy.isPresent() && getPathToNextEnemy.get().getValue().size() == 2) {
                     attackers.add(currentUnit);
                 } else {
@@ -54,9 +50,9 @@ public class Board {
 
     public StreamEx<Unit> stream() {
         return StreamEx.of(StreamEx.of(units)
-                .flatMap(Arrays::stream)
-                .collect(Collectors.toList())
-                .stream());
+            .flatMap(Arrays::stream)
+            .collect(Collectors.toList())
+            .stream());
     }
 
     public void streamBoard() {
@@ -71,23 +67,23 @@ public class Board {
     public Optional<Map.Entry<Unit, List<PathCell>>> getPathToNextEnemy(final Unit unit) {
         final Pathfinding pathfinding = new Pathfinding(this);
 
-        Map<Unit, List<PathCell>> entries = stream()
-                .filter(potentialEnemy -> potentialEnemy.isEnemyOf(unit))
-                // .peek(u -> System.out.printf("potential new enemy: %s%n", u))
-                .mapToEntry(enemy -> pathfinding.path(enemy, unit))
-                .filterValues(Optional::isPresent)
-                .mapValues(Optional::orElseThrow)
-                .toMap();
+        final Map<Unit, List<PathCell>> entries = stream()
+            .filter(potentialEnemy -> potentialEnemy.isEnemyOf(unit))
+            // .peek(u -> System.out.printf("potential new enemy: %s%n", u))
+            .mapToEntry(enemy -> pathfinding.path(enemy, unit))
+            .filterValues(Optional::isPresent)
+            .mapValues(Optional::orElseThrow)
+            .toMap();
 
-        Map<Boolean, List<Map.Entry<Unit, List<PathCell>>>> collect = entries.entrySet().stream().collect(Collectors.partitioningBy(e -> e.getValue().size() == 2));
+        final Map<Boolean, List<Map.Entry<Unit, List<PathCell>>>> collect = entries.entrySet().stream().collect(Collectors.partitioningBy(e -> e.getValue().size() == 2));
 
-        List<Map.Entry<Unit, List<PathCell>>> nextToEnemy = collect.get(true);
+        final List<Map.Entry<Unit, List<PathCell>>> nextToEnemy = collect.get(true);
         if (nextToEnemy.isEmpty()) {
             return EntryStream.of(entries).minByInt(entry -> entry.getValue().size());
         } else {
-            Comparator<Map.Entry<Unit, List<PathCell>>> lowestHP = Comparator.comparingInt(e -> e.getKey().getHp());
-            Comparator<Map.Entry<Unit, List<PathCell>>> readingOrderX = Comparator.comparingInt(e -> e.getValue().get(0).getX());
-            Comparator<Map.Entry<Unit, List<PathCell>>> readingOrderY = Comparator.comparingInt(e -> e.getValue().get(0).getY());
+            final Comparator<Map.Entry<Unit, List<PathCell>>> lowestHP = Comparator.comparingInt(e -> e.getKey().getHp());
+            final Comparator<Map.Entry<Unit, List<PathCell>>> readingOrderX = Comparator.comparingInt(e -> e.getValue().get(0).getX());
+            final Comparator<Map.Entry<Unit, List<PathCell>>> readingOrderY = Comparator.comparingInt(e -> e.getValue().get(0).getY());
             return StreamEx.of(nextToEnemy).mapToEntry(Map.Entry::getKey, Map.Entry::getValue).min(lowestHP.thenComparing(readingOrderX).thenComparing(readingOrderY));
         }
 
@@ -112,7 +108,7 @@ public class Board {
             for (int x = 0; x < units[y].length; x++) {
                 sb.append(units[y][x].getType());
             }
-            String unitString = Arrays.stream(units[y]).filter(IS_LIVING_CREATURE).map(u -> String.format("%s(%s)", u.getType(), u.getHp())).collect(Collectors.joining(", "));
+            final String unitString = Arrays.stream(units[y]).filter(IS_LIVING_CREATURE).map(u -> String.format("%s(%s)", u.getType(), u.getHp())).collect(Collectors.joining(", "));
             sb.append("   ");
             sb.append(unitString);
             sb.append(System.lineSeparator());
@@ -149,6 +145,6 @@ public class Board {
 
     public boolean isFinished() {
         return stream().map(Unit::getType).noneMatch(Type.GOBLIN::equals)
-                || stream().map(Unit::getType).noneMatch(Type.ELF::equals);
+            || stream().map(Unit::getType).noneMatch(Type.ELF::equals);
     }
 }

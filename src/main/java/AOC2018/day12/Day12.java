@@ -16,9 +16,9 @@ public class Day12 {
             // String pots = "                                                                                                    " + input.get(0).substring(15).replace(".", " ") + "                                                                                                    ";
 
             Map<String, String> rules = StreamEx.of(input.stream())
-                    .skip(2)
-                    .mapToEntry(s -> s.substring(0, 5), s -> s.substring(9))
-                    .toMap();
+                .skip(2)
+                .mapToEntry(s -> s.substring(0, 5), s -> s.substring(9))
+                .toMap();
 
             String pots = input.get(0).substring(15);
             System.out.printf("Result of 12 A: %s%n", a(pots, rules));
@@ -35,9 +35,9 @@ public class Day12 {
             final String paddedPots = "...." + pots + "....";
 
             pots = IntStream.range(0, pots.length() + 4)
-                    .mapToObj(j -> paddedPots.substring(j, j + 5))
-                    .map(pattern -> rules.getOrDefault(pattern, "."))
-                    .collect(Collectors.joining());
+                .mapToObj(j -> paddedPots.substring(j, j + 5))
+                .map(pattern -> rules.getOrDefault(pattern, "."))
+                .collect(Collectors.joining());
 
             System.out.printf("% 2d: %s%n", i + 1, pots);
 
@@ -47,9 +47,9 @@ public class Day12 {
         final int finalOffset = offset;
 
         return IntStream.range(0, pots.length())
-                .filter(i -> finalPots.charAt(i) == '#')
-                .map(i -> i + finalOffset)
-                .sum();
+            .filter(i -> finalPots.charAt(i) == '#')
+            .map(i -> i + finalOffset)
+            .sum();
     }
 
     private static int b(String pots, Map<String, String> rules) {
@@ -61,9 +61,9 @@ public class Day12 {
             final String paddedPots = "...." + pots + "....";
 
             pots = IntStream.range(0, pots.length() + 4)
-                    .mapToObj(j -> paddedPots.substring(j, j + 5))
-                    .map(pattern -> rules.getOrDefault(pattern, "."))
-                    .collect(Collectors.joining());
+                .mapToObj(j -> paddedPots.substring(j, j + 5))
+                .map(pattern -> rules.getOrDefault(pattern, "."))
+                .collect(Collectors.joining());
 
             //System.out.printf("% 2d: %s%n", iteration + 1, pots);
 
@@ -72,18 +72,18 @@ public class Day12 {
             final int finalOffset = offset;
 
             System.out.println(IntStream.range(0, pots.length())
-                    .filter(j -> finalPots.charAt(j) == '#')
-                    .map(j -> j + finalOffset)
-                    .sum());
+                .filter(j -> finalPots.charAt(j) == '#')
+                .map(j -> j + finalOffset)
+                .sum());
         }
 
         final String finalPots = pots;
         final int finalOffset = offset;
 
         return IntStream.range(0, pots.length())
-                .filter(i -> finalPots.charAt(i) == '#')
-                .map(i -> i + finalOffset)
-                .sum();
+            .filter(i -> finalPots.charAt(i) == '#')
+            .map(i -> i + finalOffset)
+            .sum();
     }
 
 }

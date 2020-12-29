@@ -15,9 +15,9 @@ public class Record {
     static Pattern inputPattern = Pattern.compile("^.*(\\d+).*(\\d+).*(\\d+).*(\\d+).*$");
 
     public Record(final String raw) {
-        String[] lines = raw.split("\\n");
+        final String[] lines = raw.split("\\n");
 
-        if(!lines[0].startsWith("Before") || !lines[2].startsWith("After") || (lines[1].length() != 7 && lines[1].length() != 8)) {
+        if (!lines[0].startsWith("Before") || !lines[2].startsWith("After") || (lines[1].length() != 7 && lines[1].length() != 8)) {
             throw new IllegalArgumentException("wrong lines: " + raw);
         }
 
@@ -27,17 +27,17 @@ public class Record {
     }
 
     public static int[] toIntArray(final String line) {
-        String[] split = line.replaceAll("[^\\d ]", "").trim().split("[^\\d]+");
-        return new int[] {
-                Integer.parseInt(split[0]),
-                Integer.parseInt(split[1]),
-                Integer.parseInt(split[2]),
-                Integer.parseInt(split[3])
+        final String[] split = line.replaceAll("[^\\d ]", "").trim().split("[^\\d]+");
+        return new int[]{
+            Integer.parseInt(split[0]),
+            Integer.parseInt(split[1]),
+            Integer.parseInt(split[2]),
+            Integer.parseInt(split[3])
         };
     }
 
-    private MatchResult getMatchResult(String input) {
-        Matcher matcher = inputPattern.matcher(input);
+    private MatchResult getMatchResult(final String input) {
+        final Matcher matcher = inputPattern.matcher(input);
         matcher.find();
         return matcher.toMatchResult();
     }

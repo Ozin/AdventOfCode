@@ -4,12 +4,7 @@ import one.util.streamex.StreamEx;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -38,10 +33,10 @@ public class Day16 {
 
     private static Object a(final Record[] records) {
         return StreamEx.of(records).cross(OpsCode.values())
-                .filterKeyValue(Day16::fits)
-                .collapseKeys()
-                .filterValues(list -> list.size() >= 3)
-                .count();
+            .filterKeyValue(Day16::fits)
+            .collapseKeys()
+            .filterValues(list -> list.size() >= 3)
+            .count();
     }
 
     private static Object b(final Record[] inputA, final int[][] inputB) {
@@ -49,14 +44,14 @@ public class Day16 {
         final var opsCodeMap = new HashMap<Integer, OpsCode>();
         while (!yetToMap.isEmpty()) {
             final var mappedCodes = StreamEx.of(yetToMap)
-                    // find for each record the possible opsCodes (without the found ones)
-                    .mapToEntry(r -> findOpsCodes(r, opsCodeMap.values()))
-                    // check if a record has only one possibility
-                    .filterValues(l -> l.size() == 1)
-                    .mapValues(l -> l.get(0))
-                    .mapKeys(r -> r.getInstruction()[0])
-                    .distinctValues()
-                    .toMap();
+                // find for each record the possible opsCodes (without the found ones)
+                .mapToEntry(r -> findOpsCodes(r, opsCodeMap.values()))
+                // check if a record has only one possibility
+                .filterValues(l -> l.size() == 1)
+                .mapValues(l -> l.get(0))
+                .mapKeys(r -> r.getInstruction()[0])
+                .distinctValues()
+                .toMap();
 
             opsCodeMap.putAll(mappedCodes);
             yetToMap.removeIf(r -> mappedCodes.keySet().contains(r.getInstruction()[0]));
@@ -77,7 +72,7 @@ public class Day16 {
         }
 
         int[] register = new int[]{0, 0, 0, 0};
-        for (int[] instruction : inputB) {
+        for (final int[] instruction : inputB) {
             register = opsCodeMap.get(instruction[0]).execute(register, instruction);
         }
 

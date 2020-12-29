@@ -1,16 +1,12 @@
 package AOC2019;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
 import utils.Point;
+
+import java.util.*;
+import java.util.function.Predicate;
 
 public class Day17 extends AbstractIntcodePuzzle {
     @Override
@@ -43,7 +39,7 @@ public class Day17 extends AbstractIntcodePuzzle {
         final long[] awakeRobotState = state;
         awakeRobotState[0] = 2;
         final IntcodeComputer intcodeComputer = new IntcodeComputer(awakeRobotState);
-        final String[] inputs = new String[] {
+        final String[] inputs = new String[]{
             //////////////////////
             "A,A,B,C,B,C,B,C,B,A",
             "R,6,L,12,R,6",

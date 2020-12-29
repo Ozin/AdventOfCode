@@ -5,12 +5,12 @@ import lombok.Value;
 import lombok.experimental.Wither;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
+import utils.AbstractDay;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
-import utils.AbstractDay;
 
 @Value
 @RequiredArgsConstructor

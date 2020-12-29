@@ -9,8 +9,8 @@ import java.util.Comparator;
 @EqualsAndHashCode
 public class Cell {
     public static final Comparator<? super Cell> READING_ORDER = Comparator
-            .comparingInt(Cell::getY)
-            .thenComparingInt(Cell::getX);
+        .comparingInt(Cell::getY)
+        .thenComparingInt(Cell::getX);
 
     int x;
     int y;

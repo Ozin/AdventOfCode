@@ -1,10 +1,6 @@
 package AOC2018.day08;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.LinkedList;
@@ -22,9 +18,9 @@ public class Node {
     final int[] metadata;
     int value = -1;
 
-    public static Node from(LinkedList<Integer> queue) {
-        Node[] nodes = new Node[queue.pollFirst()];
-        int[] metadata = new int[queue.pollFirst()];
+    public static Node from(final LinkedList<Integer> queue) {
+        final Node[] nodes = new Node[queue.pollFirst()];
+        final int[] metadata = new int[queue.pollFirst()];
 
         for (int i = 0; i < nodes.length; i++) {
             nodes[i] = from(queue);
@@ -39,8 +35,8 @@ public class Node {
 
     public Stream<Node> stream() {
         return Stream.concat(
-                Stream.of(this),
-                Stream.of(childs).flatMap(Node::stream)
+            Stream.of(this),
+            Stream.of(childs).flatMap(Node::stream)
         );
     }
 
@@ -58,15 +54,15 @@ public class Node {
         }
 
         return IntStream.of(metadata)
-                .map(i -> i - 1)
-                .mapToObj(this::getChild)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .mapToInt(Node::calculateValue)
-                .sum();
+            .map(i -> i - 1)
+            .mapToObj(this::getChild)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .mapToInt(Node::calculateValue)
+            .sum();
     }
 
-    private Optional<Node> getChild(int index) {
+    private Optional<Node> getChild(final int index) {
         return index < childs.length ? Optional.of(childs[index]) : Optional.empty();
     }
 }

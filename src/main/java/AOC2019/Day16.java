@@ -1,11 +1,11 @@
 package AOC2019;
 
-import static java.util.stream.Collectors.joining;
-
-
-import java.util.Arrays;
 import one.util.streamex.IntStreamEx;
 import utils.AbstractDay;
+
+import java.util.Arrays;
+
+import static java.util.stream.Collectors.joining;
 
 public class Day16 extends AbstractDay<int[]> {
 

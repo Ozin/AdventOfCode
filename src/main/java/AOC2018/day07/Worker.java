@@ -1,11 +1,6 @@
 package AOC2018.day07;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.function.Predicate.not;
@@ -19,18 +14,18 @@ public class Worker {
 
     private Node currentJob;
 
-    public Worker(TreeSet<Node> possibilities, ArrayList<Node> finished, Collection<Node> graph) {
+    public Worker(final TreeSet<Node> possibilities, final ArrayList<Node> finished, final Collection<Node> graph) {
         this.possibilities = possibilities;
         this.finished = finished;
         this.graph = graph;
     }
 
     private void addNewPossibilities() {
-        List<Node> next = graph.stream()
-                .filter(not(finished::contains))
-                .filter(not(inProgress::contains))
-                .filter(n -> finished.containsAll(n.getPreconditions()))
-                .collect(Collectors.toList());
+        final List<Node> next = graph.stream()
+            .filter(not(finished::contains))
+            .filter(not(inProgress::contains))
+            .filter(n -> finished.containsAll(n.getPreconditions()))
+            .collect(Collectors.toList());
 
         possibilities.addAll(next);
     }
@@ -42,9 +37,9 @@ public class Worker {
     @Override
     public String toString() {
         return "Worker{" +
-                "count=" + count +
-                ", currentJob=" + currentJob +
-                '}';
+            "count=" + count +
+            ", currentJob=" + currentJob +
+            '}';
     }
 
     public Node getCurrentJob() {
@@ -54,7 +49,7 @@ public class Worker {
     public void doWork() {
         count++;
 
-        if(currentJob == null) {
+        if (currentJob == null) {
             pickNext();
         } else {
             checkFinished();

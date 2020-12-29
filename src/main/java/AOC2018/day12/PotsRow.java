@@ -12,8 +12,8 @@ public class PotsRow {
     public PotsRow(String input) {
         TreeSet<Pot> pots = new TreeSet<>();
         IntStream.range(0, input.length())
-                .mapToObj(i -> new Pot(i, input.charAt(i) == '#'))
-                .forEach(pots::add);
+            .mapToObj(i -> new Pot(i, input.charAt(i) == '#'))
+            .forEach(pots::add);
     }
 
     public int getLastPot() {
@@ -36,7 +36,7 @@ public class PotsRow {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for(int i = firstPot; i < lastPot; i++) {
+        for (int i = firstPot; i < lastPot; i++) {
             sb.append(pots.getOrDefault(i, false) ? "#" : ".");
         }
         return sb.toString();

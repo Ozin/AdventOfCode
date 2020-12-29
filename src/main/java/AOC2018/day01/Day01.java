@@ -25,9 +25,9 @@ public class Day01 {
             var frequencies = br.lines().mapToInt(Integer::parseInt).toArray();
             var sum = 0;
 
-            for(int i = 0; ; i++) {
+            for (int i = 0; ; i++) {
                 sum += frequencies[i % frequencies.length];
-                if(intermediates.contains(sum)) {
+                if (intermediates.contains(sum)) {
                     System.out.printf("Result of 01.txt B. frequency: %d, iterations: %d%n", sum, i);
                     break;
                 } else {

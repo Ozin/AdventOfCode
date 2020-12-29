@@ -15,8 +15,8 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class PathCell {
     public static final Comparator<? super PathCell> READING_ORDER = Comparator
-            .comparingInt(PathCell::getY)
-            .thenComparingInt(PathCell::getX);
+        .comparingInt(PathCell::getY)
+        .thenComparingInt(PathCell::getX);
 
     private final int x;
     private final int y;
@@ -35,18 +35,22 @@ public class PathCell {
 
     public Stream<PathCell> stream() {
         return Stream.concat(
-                Optional.ofNullable(parent).filter(p -> this != p).stream().flatMap(PathCell::stream),
-                Stream.of(this)
+            Optional.ofNullable(parent).filter(p -> this != p).stream().flatMap(PathCell::stream),
+            Stream.of(this)
         );
     }
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         final PathCell pathCell = (PathCell) o;
         return x == pathCell.x &&
-                y == pathCell.y;
+            y == pathCell.y;
     }
 
     @Override
@@ -57,9 +61,9 @@ public class PathCell {
     @Override
     public String toString() {
         return new StringJoiner(", ", PathCell.class.getSimpleName() + "[", "]")
-                .add("x=" + x)
-                .add("y=" + y)
-                .add("type=" + type)
-                .toString();
+            .add("x=" + x)
+            .add("y=" + y)
+            .add("type=" + type)
+            .toString();
     }
 }

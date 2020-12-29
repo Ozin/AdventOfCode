@@ -27,10 +27,10 @@ public class Day10 {
 
         long previousArea = new Area(points).calculate();
         Point[] previousPoints = null;
-        for(int i = 0; ; i++) {
+        for (int i = 0; ; i++) {
             Point[] newPoints = Stream.of(points).map(Point.atSecond(i)).toArray(Point[]::new);
             long newArea = new Area(newPoints).calculate();
-            if(newArea > previousArea) {
+            if (newArea > previousArea) {
                 return previousPoints;
             }
 
@@ -41,10 +41,10 @@ public class Day10 {
 
     private static long b(Point[] points) {
         long previousArea = new Area(points).calculate();
-        for(int i = 0; ; i++) {
+        for (int i = 0; ; i++) {
             Point[] newPoints = Stream.of(points).map(Point.atSecond(i)).toArray(Point[]::new);
             long newArea = new Area(newPoints).calculate();
-            if(newArea > previousArea) {
+            if (newArea > previousArea) {
                 return i - 1;
             }
 
@@ -56,8 +56,8 @@ public class Day10 {
         Area area = new Area(points);
 
         Set<Point> pointSet = StreamEx.of(points)
-                .map(p -> new Point(p.getX(), p.getY()))
-                .toSet();
+            .map(p -> new Point(p.getX(), p.getY()))
+            .toSet();
 
         StringBuilder sb = new StringBuilder();
         for (long y = area.getMinY(); y <= area.getMaxY(); y++) {

@@ -2,11 +2,11 @@ package AOC2019;
 
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
+import utils.AbstractDay;
 
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
-import utils.AbstractDay;
 
 public class Day08 extends AbstractDay<int[][]> {
     //public final int WIDTH = 2;//25;

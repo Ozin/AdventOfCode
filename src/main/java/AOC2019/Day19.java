@@ -1,8 +1,9 @@
 package AOC2019;
 
-import java.util.Map;
 import one.util.streamex.IntStreamEx;
 import utils.Point;
+
+import java.util.Map;
 
 public class Day19 extends AbstractIntcodePuzzle {
     @Override

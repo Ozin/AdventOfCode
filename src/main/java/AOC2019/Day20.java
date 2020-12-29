@@ -1,15 +1,12 @@
 package AOC2019;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiFunction;
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
 import utils.Abstract2DPuzzle;
 import utils.Point;
+
+import java.util.*;
+import java.util.function.BiFunction;
 
 public class Day20 extends Abstract2DPuzzle {
 

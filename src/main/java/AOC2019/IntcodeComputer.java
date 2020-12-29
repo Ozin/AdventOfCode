@@ -17,8 +17,8 @@ public class IntcodeComputer {
         this.pointer = 0;
         this.relativeBase = 0;
         this.input = Arrays.stream(input)
-                .boxed()
-                .collect(Collectors.toCollection(LinkedList::new));
+            .boxed()
+            .collect(Collectors.toCollection(LinkedList::new));
         this.done = false;
     }
 
@@ -184,7 +184,9 @@ public class IntcodeComputer {
     }
 
     private int powTen(final int i) {
-        if (i == 0) return 1;
+        if (i == 0) {
+            return 1;
+        }
         return 10 * powTen(i - 1);
     }
 

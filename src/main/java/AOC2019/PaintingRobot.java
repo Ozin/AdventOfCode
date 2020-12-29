@@ -1,8 +1,9 @@
 package AOC2019;
 
+import utils.Point;
+
 import java.util.HashMap;
 import java.util.Map;
-import utils.Point;
 
 import static AOC2019.Direction.UP;
 

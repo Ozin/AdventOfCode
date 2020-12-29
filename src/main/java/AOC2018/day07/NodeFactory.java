@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 public class NodeFactory {
-    private static Map<String, Node> map = new HashMap<>();
+    private static final Map<String, Node> map = new HashMap<>();
 
-    public static Node get(String id) {
+    public static Node get(final String id) {
         return map.computeIfAbsent(id, Node::new);
     }
 
@@ -18,13 +18,13 @@ public class NodeFactory {
         return map.values();
     }
 
-    public static void build(Map<String, List<String>> dependencies) {
+    public static void build(final Map<String, List<String>> dependencies) {
         EntryStream.of(dependencies)
-                .mapKeys(NodeFactory::get)
-                .flatMapValues(List::stream)
-                .mapValues(NodeFactory::get)
-                .invert()
-                .forKeyValue(Node::addPrecondition);
+            .mapKeys(NodeFactory::get)
+            .flatMapValues(List::stream)
+            .mapValues(NodeFactory::get)
+            .invert()
+            .forKeyValue(Node::addPrecondition);
     }
 
     public static void reset() {

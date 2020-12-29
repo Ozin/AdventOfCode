@@ -10,11 +10,11 @@ public class Day11 {
 
     public static void main(String[] args) {
         Map<Point, Integer> powerMap = IntStreamEx.range(0, 300).boxed()
-                .cross(IntStreamEx.range(0, 300).boxed().toList())
-                .parallel()
-                .mapKeyValue(Point::new)
-                .mapToEntry(Day11::calculateCellPower)
-                .toMap();
+            .cross(IntStreamEx.range(0, 300).boxed().toList())
+            .parallel()
+            .mapKeyValue(Point::new)
+            .mapToEntry(Day11::calculateCellPower)
+            .toMap();
 
         SummedAreaTable sat = new SummedAreaTable(powerMap);
 
@@ -25,12 +25,12 @@ public class Day11 {
     private static Map.Entry<Point, Integer> b(SummedAreaTable sat) {
         Comparator<Map.Entry<Point, Integer>> comparator = Comparator.comparingInt(entry -> sat.get(entry.getKey(), entry.getValue()));
         return IntStreamEx.range(1, 300).boxed()
-                .mapToEntry(gridSize -> getBestPointForGridSize(sat, gridSize))
-                .invert()
-                .sorted(comparator.reversed())
-                .mapKeys(p -> p.addY(1).addX(1))
-                .findFirst()
-                .get();
+            .mapToEntry(gridSize -> getBestPointForGridSize(sat, gridSize))
+            .invert()
+            .sorted(comparator.reversed())
+            .mapKeys(p -> p.addY(1).addX(1))
+            .findFirst()
+            .get();
 
 
     }
@@ -39,23 +39,23 @@ public class Day11 {
         final int gridSize = 3;
 
         return getBestPointForGridSize(sat, gridSize)
-                .addY(1)
-                .addX(1);
+            .addY(1)
+            .addX(1);
     }
 
     private static Point getBestPointForGridSize(SummedAreaTable sat, int gridSize) {
         Comparator<Map.Entry<Point, Integer>> comparator = Comparator.comparingInt(Map.Entry::getValue);
         Map.Entry<Point, Integer> pointIntegerEntry = IntStreamEx.range(0, 301 - gridSize).boxed()
-                .cross(IntStreamEx.range(0, 301 - gridSize).boxed().toList())
-                .mapKeyValue(Point::new)
-                .mapToEntry(p -> sat.get(p, gridSize))
-                .sorted(comparator.reversed())
-                .findFirst()
-                .get();
+            .cross(IntStreamEx.range(0, 301 - gridSize).boxed().toList())
+            .mapKeyValue(Point::new)
+            .mapToEntry(p -> sat.get(p, gridSize))
+            .sorted(comparator.reversed())
+            .findFirst()
+            .get();
 
         System.out.printf("GridSize: %s, Point: %s, Value: %s%n", gridSize, pointIntegerEntry.getKey(), pointIntegerEntry.getValue());
         return pointIntegerEntry
-                .getKey();
+            .getKey();
     }
 //
 //    private static Point getBestPointForSubGrid(int gridSize) {

@@ -2,17 +2,12 @@ package AOC2019;
 
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import utils.AbstractDay;
 import utils.Point;
 import utils.Vector;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparingDouble;
 import static java.util.function.Predicate.not;

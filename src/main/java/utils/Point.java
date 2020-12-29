@@ -1,16 +1,14 @@
 package utils;
 
-import static java.util.function.Predicate.not;
-
 import AOC2019.Direction;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 import lombok.NonNull;
 import lombok.Value;
 import lombok.With;
 import one.util.streamex.EntryStream;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
+
+import static java.util.function.Predicate.not;
 
 @Value
 public class Point {

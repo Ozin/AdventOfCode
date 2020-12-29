@@ -31,7 +31,7 @@ public class Day15 {
         int i = 0;
         while (!board.isFinished()) {
             board.streamUnits()
-                    .forEach(unit -> doTurn(board, unit));
+                .forEach(unit -> doTurn(board, unit));
 
             System.out.printf("%s%n%s%n%n", ++i, board);
         }

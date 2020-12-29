@@ -2,14 +2,14 @@ package AOC2019;
 
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
+import utils.AbstractDay;
+import utils.Utils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import utils.AbstractDay;
-import utils.Utils;
 
 public class Day14 extends AbstractDay<Map<String, Reaction>> {
 

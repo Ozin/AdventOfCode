@@ -1,16 +1,12 @@
 package AOC2019;
 
-import static java.util.function.Predicate.not;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import one.util.streamex.EntryStream;
 import utils.Abstract2DPuzzle;
 import utils.Point;
+
+import java.util.*;
+
+import static java.util.function.Predicate.not;
 
 public class Day18 extends Abstract2DPuzzle {
 

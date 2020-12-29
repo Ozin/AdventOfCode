@@ -10,29 +10,35 @@ public class ConvexHull {
     // 0 --> p, q and r are colinear
     // 1 --> Clockwise
     // 2 --> Counterclockwise
-    public static int orientation(Point p, Point q, Point r) {
-        int val = (q.getY() - p.getY()) * (r.getX() - q.getX()) -
-                (q.getX() - p.getX()) * (r.getY() - q.getY());
+    public static int orientation(final Point p, final Point q, final Point r) {
+        final int val = (q.getY() - p.getY()) * (r.getX() - q.getX()) -
+            (q.getX() - p.getX()) * (r.getY() - q.getY());
 
-        if (val == 0) return 0;  // collinear
+        if (val == 0) {
+            return 0;  // collinear
+        }
         return (val > 0) ? 1 : 2; // clock or counterclock wise
     }
 
     // Prints convex hull of a set of n points.
-    public static List<Point> convexHull(Point[] points) {
-        int n = points.length;
+    public static List<Point> convexHull(final Point[] points) {
+        final int n = points.length;
 
         // There must be at least 3 points
-        if (n < 3) throw new IllegalArgumentException("Must have at least 3 points");
+        if (n < 3) {
+            throw new IllegalArgumentException("Must have at least 3 points");
+        }
 
         // Initialize Result
-        List<Point> hull = new ArrayList<>();
+        final List<Point> hull = new ArrayList<>();
 
         // Find the leftmost point
         int l = 0;
-        for (int i = 1; i < n; i++)
-            if (points[i].getX() < points[l].getX())
+        for (int i = 1; i < n; i++) {
+            if (points[i].getX() < points[l].getX()) {
                 l = i;
+            }
+        }
 
         // Start from leftmost point, keep moving
         // counterclockwise until reach the start point
@@ -55,8 +61,9 @@ public class ConvexHull {
                 // If i is more counterclockwise than
                 // current q, then update q
                 if (orientation(points[p], points[i], points[q])
-                        == 2)
+                    == 2) {
                     q = i;
+                }
             }
 
             // Now q is the most counterclockwise with

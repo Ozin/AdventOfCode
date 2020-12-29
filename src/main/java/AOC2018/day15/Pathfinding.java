@@ -56,14 +56,14 @@ public class Pathfinding {
     }
 
     private List<PathCell> backTrack(final PathCell targetCell) {
-        List<PathCell> cellList = targetCell.stream().collect(Collectors.toList());
+        final List<PathCell> cellList = targetCell.stream().collect(Collectors.toList());
         return cellList;
     }
 
     private Comparator<PathCell> compareByFCost(final PathCell target) {
         final ToIntFunction<PathCell> getFCost = cell -> cell.getFCost(target);
         return Comparator.comparingInt(getFCost)
-                .thenComparing(PathCell.READING_ORDER);
+            .thenComparing(PathCell.READING_ORDER);
     }
 
     private PathCell getPathCell(final PathCell[][] pathCells, final Unit unit) {
@@ -89,14 +89,14 @@ public class Pathfinding {
         final int y = a.getY();
 
         return Stream.of(
-                getSafe(x + 1, y, pathCells),
-                getSafe(x - 1, y, pathCells),
-                getSafe(x, y + 1, pathCells),
-                getSafe(x, y - 1, pathCells)
+            getSafe(x + 1, y, pathCells),
+            getSafe(x - 1, y, pathCells),
+            getSafe(x, y + 1, pathCells),
+            getSafe(x, y - 1, pathCells)
         )
-                .flatMap(Function.identity())
-                .sorted(PathCell.READING_ORDER)
-                .collect(Collectors.toList());
+            .flatMap(Function.identity())
+            .sorted(PathCell.READING_ORDER)
+            .collect(Collectors.toList());
     }
 
     private Stream<PathCell> getSafe(final int x, final int y, final PathCell[][] pathCells) {
