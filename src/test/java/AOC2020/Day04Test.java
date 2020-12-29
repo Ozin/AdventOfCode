@@ -1,8 +1,8 @@
 package AOC2020;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class Day04Test {
     Day04 day04 = new Day04();
@@ -11,7 +11,7 @@ public class Day04Test {
     public void a1() throws Exception {
         day04.setInputFilePath("/2020/day04-01.txt");
 
-        assertEquals(10, day04.getA());
+        assertEquals(10L, day04.getA());
     }
 
     @Test

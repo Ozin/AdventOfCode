@@ -25,14 +25,14 @@ public class Day10 extends AbstractDay<int[]> {
     protected Object a(final int[] input) throws Exception {
         final int[] extendedInput = extendInput(input);
 
-
         final Map<Integer, Long> entries = IntStreamEx.range(extendedInput.length - 1)
             .map(i -> extendedInput[i + 1] - extendedInput[i])
             .sorted()
             .boxed()
             .runLengths()
             .toMap();
-        return entries.get(1L) * entries.get(3L);
+
+        return entries.get(1) * entries.get(3);
     }
 
     @Override
