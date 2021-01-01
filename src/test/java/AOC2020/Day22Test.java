@@ -11,7 +11,7 @@ public class Day22Test {
     public void aFinal() throws Exception {
         final Object result = day.getA();
 
-        assertEquals(32448, result);
+        assertEquals(32448L, result);
     }
 
     @Test
