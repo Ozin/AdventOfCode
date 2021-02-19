@@ -1,8 +1,12 @@
 package AOC2020;
 
+import lombok.val;
 import org.junit.Test;
 
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class Day19Test {
     Day19 day = new Day19();
@@ -40,7 +44,7 @@ public class Day19Test {
 
         final Object result = day.getB();
 
-        assertEquals(12L, result);
+        assertEquals(1L, result);
     }
 
     @Test
@@ -54,6 +58,20 @@ public class Day19Test {
     public void bFinal() throws Exception {
         final Object result = day.getB();
 
-        assertEquals(null, result);
+        assertEquals(341L, result);
+    }
+
+    @Test
+    public void and1() {
+        val input = Map.of(
+                0, "1 2",
+                1, "\"a\"",
+                2, "\"b\" | 0"
+        );
+
+        Map<Integer, Day19.Rule> rules = Day19.Rule.of(input);
+        boolean result = rules.get(0).matches("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab", rules);
+
+        assertTrue(result);
     }
 }

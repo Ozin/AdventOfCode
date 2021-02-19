@@ -20,8 +20,8 @@ public class Day19 extends AbstractDay<Day19.Input> {
     protected Input parseInput(final String[] rawInput) throws Exception {
         final String[] blocks = String.join("\n", rawInput).split(Pattern.quote("\n\n"));
         final Map<Integer, String> rawRuleMap = StreamEx.of(blocks[0].split("\n"))
-            .map(s -> s.split(": "))
-            .toMap(s -> Integer.parseInt(s[0]), s -> s[1]);
+                .map(s -> s.split(": "))
+                .toMap(s -> Integer.parseInt(s[0]), s -> s[1]);
 
         return new Input(Rule.of(rawRuleMap), Arrays.asList(blocks[1].split("\n")));
     }
@@ -31,8 +31,8 @@ public class Day19 extends AbstractDay<Day19.Input> {
         final Map<Integer, Rule> rules = input.getRules();
 
         return StreamEx.of(input.getMessages())
-            .filter(message -> input.getRules().get(0).matches(message, input.getRules()))
-            .count();
+                .filter(message -> input.getRules().get(0).matches(message, input.getRules()))
+                .count();
     }
 
     @Override
@@ -44,8 +44,8 @@ public class Day19 extends AbstractDay<Day19.Input> {
         input.getRules().put(11, new OrRule(new AndRule(42, 31), new AndRule(42, 11, 31)));
 
         return StreamEx.of(input.getMessages())
-            .filter(message -> input.getRules().get(0).matches(message, input.getRules()))
-            .count();
+                .filter(message -> input.getRules().get(0).matches(message, input.getRules()))
+                .count();
     }
 
     @Value
@@ -57,11 +57,11 @@ public class Day19 extends AbstractDay<Day19.Input> {
     interface Rule {
         static Map<Integer, Rule> of(final Map<Integer, String> rawRuleMap) {
             return EntryStream.of(rawRuleMap)
-                .mapValues(Rule::getStringOrRuleFunction)
-                .toMap();
+                    .mapValues(Rule::getRule)
+                    .toMap();
         }
 
-        private static Rule getStringOrRuleFunction(final String rawRule) {
+        private static Rule getRule(final String rawRule) {
             if (rawRule.matches("\".\"")) {
                 return new ConstRule(rawRule.substring(1, 2));
             }
@@ -69,7 +69,7 @@ public class Day19 extends AbstractDay<Day19.Input> {
             final String[] orRules = rawRule.split(" \\| ");
 
             if (orRules.length > 1) {
-                return new OrRule(StreamEx.of(orRules).map(Rule::getStringOrRuleFunction).toSet());
+                return new OrRule(StreamEx.of(orRules).map(Rule::getRule).toSet());
             } else {
                 return new AndRule(StreamEx.of(orRules[0].split(" ")).map(Integer::parseInt).toList());
             }
@@ -101,7 +101,7 @@ public class Day19 extends AbstractDay<Day19.Input> {
 
         private boolean evaluateMatch(final String s, final Map<Integer, Rule> rules) {
             return StreamEx.of(this.subRules)
-                .anyMatch(rule -> rule.matches(s, rules));
+                    .anyMatch(rule -> rule.matches(s, rules));
         }
     }
 
@@ -127,27 +127,33 @@ public class Day19 extends AbstractDay<Day19.Input> {
         }
 
         private boolean evaluateMatch(final String s, final Map<Integer, Rule> rules) {
-            int startIndex = 0;
             final List<Rule> subRules = ruleIds.stream()
-                .map(rules::get)
-                .collect(Collectors.toList());
+                    .map(rules::get)
+                    .collect(Collectors.toList());
 
-            for (final Rule rule : subRules) {
-                boolean ruleMatched = false;
-                for (int i = startIndex + 1; i < s.length() + 1; i++) {
-                    if (rule.matches(s.substring(startIndex, i), rules)) {
-                        startIndex = i;
-                        ruleMatched = true;
-                        break;
-                    }
-                }
+            return evaluateMatch(subRules, s, rules);
+        }
 
-                if (!ruleMatched) {
-                    return false;
+        private boolean evaluateMatch(List<Rule> subRules, String test, Map<Integer, Rule> rules) {
+            if (subRules.isEmpty() && test.isEmpty()) return true;
+            if (subRules.isEmpty() || test.isEmpty()) return false;
+
+            Rule current = subRules.get(0);
+
+            if (subRules.size() == 1) {
+                try {
+                    return current.matches(test, rules);
+                } catch (StackOverflowError ignored) {}
+            }
+
+            for (int i = 1; i < test.length(); i++) {
+                if (current.matches(test.substring(0, i), rules)
+                        && evaluateMatch(subRules.subList(1, subRules.size()), test.substring(i), rules)) {
+                    return true;
                 }
             }
 
-            return startIndex == s.length();
+            return false;
         }
 
     }
