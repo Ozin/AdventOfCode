@@ -1,19 +1,20 @@
 package AOC2019;
 
-import static AOC2019.Day22.ShuffleMethod.CUT;
-import static AOC2019.Day22.ShuffleMethod.INCREMENT;
-import static AOC2019.Day22.ShuffleMethod.NEW_STACK;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import one.util.streamex.EntryStream;
+import one.util.streamex.StreamEx;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.IntStream;
-import one.util.streamex.EntryStream;
-import one.util.streamex.StreamEx;
-import org.junit.Ignore;
-import org.junit.Test;
+
+import static AOC2019.Day22.ShuffleMethod.CUT;
+import static AOC2019.Day22.ShuffleMethod.INCREMENT;
+import static AOC2019.Day22.ShuffleMethod.NEW_STACK;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Day22Test {
 
@@ -21,7 +22,7 @@ public class Day22Test {
     private final Day22 day22 = new Day22();
 
     @Test
-    @Ignore
+    @Disabled
     public void bFinal() throws Exception {
         assertEquals(5540, day22.getB());
     }

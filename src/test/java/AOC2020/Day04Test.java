@@ -1,8 +1,8 @@
 package AOC2020;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Day04Test {
     Day04 day04 = new Day04();

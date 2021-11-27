@@ -1,14 +1,13 @@
 package AOC2019;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.FixMethodOrder;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
-
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class Day18Test {
     Day18 day18 = new Day18();
 
@@ -48,7 +47,7 @@ public class Day18Test {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void aFinal() throws Exception {
         assertEquals(5288, day18.getA());
     }
@@ -80,7 +79,7 @@ public class Day18Test {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void bFinal() throws Exception {
         assertEquals(2082, day18.getB());
     }

@@ -1,11 +1,11 @@
 package AOC2019;
 
-import org.junit.Test;
-
-import java.util.Map;
+import org.junit.jupiter.api.Test;
 import utils.Point;
 
-import static org.junit.Assert.assertEquals;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Day10Test {
     Day10 day = new Day10();

@@ -1,8 +1,8 @@
 package AOC2019;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Day13Test {
     Day13 day13 = new Day13();

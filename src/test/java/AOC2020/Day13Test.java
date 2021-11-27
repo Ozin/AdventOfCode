@@ -1,10 +1,9 @@
 package AOC2020;
 
-import static org.junit.Assert.*;
-import static utils.Utils.gcd;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
-import utils.Utils;
+import static org.junit.jupiter.api.Assertions.*;
+import static utils.Utils.gcd;
 
 public class Day13Test {
     @Test

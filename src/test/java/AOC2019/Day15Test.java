@@ -1,11 +1,11 @@
 package AOC2019;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Ignore
+@Disabled
 public class Day15Test {
     Day15 day15 = new Day15();
 
