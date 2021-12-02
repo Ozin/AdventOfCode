@@ -1,62 +1,65 @@
 package AOC2021;
 
-import lombok.Value;
 import one.util.streamex.StreamEx;
-import utils.AbstractDay;
+import utils.Point;
+import utils.Vector;
 
-import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class Day02 extends AbstractDay<Day02.Password[]> {
-    public static void main(final String[] args) {
-        new Day02().run();
+public class Day02 {
+
+    protected String a(final String input) throws Exception {
+        Point[] start = new Point[]{new Point(0, 0)};
+
+        StreamEx.of(input)
+                .flatMap(String::lines)
+                .map(instruction -> instruction.split(" "))
+                .mapToEntry(instruction -> instruction[0], instruction -> instruction[1])
+                .mapValues(Integer::parseInt)
+                .forKeyValue((direction, amount) -> {
+                    switch (direction) {
+                        case "forward":
+                            start[0] = start[0].addX(amount);
+                            break;
+                        case "up":
+                            start[0] = start[0].addY(-amount);
+                            break;
+                        case "down":
+                            start[0] = start[0].addY(amount);
+                            break;
+                        default:
+                            throw new IllegalStateException("Unexpected direction: " + direction);
+                    }
+                });
+
+        return "" + (start[0].getX() * start[0].getY());
     }
 
-    Pattern linePattern = Pattern.compile("^(\\d+)-(\\d+) (.): (.+)$");
+    protected String b(final String input) throws Exception {
+        Point[] position = new Point[]{new Point(0, 0)};
+        AtomicInteger aim = new AtomicInteger(0);
 
-    @Override
-    protected Password[] parseInput(final String[] rawInput) throws Exception {
-        return Stream.of(rawInput)
-            .map(linePattern::matcher)
-            .filter(Matcher::find)
-            .map(m -> new Password(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), m.group(3), m.group(4)))
-            .toArray(Password[]::new);
-    }
+        StreamEx.of(input)
+                .flatMap(String::lines)
+                .map(instruction -> instruction.split(" "))
+                .mapToEntry(instruction -> instruction[0], instruction -> instruction[1])
+                .mapValues(Integer::parseInt)
+                .forKeyValue((direction, amount) -> {
+                    switch (direction) {
+                        case "forward":
+                            position[0] = position[0].addX(amount).addY(aim.get() * amount);
+                            break;
+                        case "up":
+                            aim.addAndGet(-amount);
+                            break;
+                        case "down":
+                            aim.addAndGet(amount);
+                            break;
+                        default:
+                            throw new IllegalStateException("Unexpected direction: " + direction);
+                    }
+                });
 
-    @Override
-    protected Object a(final Password[] input) throws Exception {
-        final Predicate<? super Password> isValid = p -> {
-            final long amount = StreamEx.of(p.getPassword().split(""))
-                .sorted()
-                .runLengths()
-                .filterKeys(p.getValChar()::equals)
-                .values()
-                .findFirst()
-                .orElse(0L);
-
-            return amount >= p.getLower_border() && amount <= p.getUpper_border();
-        };
-
-        return Stream.of(input).filter(isValid).count();
-    }
-
-    @Override
-    protected Object b(final Password[] input) throws Exception {
-        final Predicate<? super Password> isValid = p -> {
-            final String[] chars = p.getPassword().split("");
-
-            return chars[p.getLower_border() - 1].equals(p.getValChar())
-                != chars[p.getUpper_border() - 1].equals(p.getValChar());
-        };
-
-        return Stream.of(input).filter(isValid).count();
-    }
-
-    @Value
-    static class Password {
-        int lower_border, upper_border;
-        String valChar, password;
+        return "" + (position[0].getX() * position[0].getY());
     }
 }
