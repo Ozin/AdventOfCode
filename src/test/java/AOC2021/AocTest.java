@@ -55,7 +55,7 @@ public interface AocTest {
 
     private Executable getExecutable(Object dayImplementation, String methodName, String testContent, String expected) {
         return () -> {
-            final Object resultA = dayImplementation.getClass().getDeclaredMethod(methodName, String.class).invoke(dayImplementation, testContent);
+            final Object resultA = dayImplementation.getClass().getDeclaredMethod(methodName, String[].class).invoke(dayImplementation, (Object) testContent.split("\\n"));
             assertEquals(expected, resultA);
         };
     }
