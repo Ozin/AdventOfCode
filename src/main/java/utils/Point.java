@@ -60,4 +60,8 @@ public class Point {
             .mapKeyValue((x, y) -> this.addX(x).addY(y))
             .filter(not(this::equals));
     }
+
+    public Point add(Point point) {
+        return this.addX(point.getX()).addY(point.getY());
+    }
 }

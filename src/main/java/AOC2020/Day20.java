@@ -4,7 +4,6 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import one.util.streamex.StreamEx;
 import utils.AbstractDay;
-import utils.Indexed;
 import utils.Point;
 
 import java.util.ArrayList;
@@ -18,6 +17,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.util.function.Predicate.not;
 
 public class Day20 extends AbstractDay<List<Day20.Tile>> {
     public static void main(final String[] args) {
@@ -78,43 +79,74 @@ public class Day20 extends AbstractDay<List<Day20.Tile>> {
 
         Map<Point, Tile> tiles = layoutTiles(dim, corner);
 
-        getImage(tiles, dim);
+        final Set<Point> image = getImage(tiles, dim);
 
-        return tiles;
+        final Set<Point> seaMonsters = searchMonsters(image);
+
+        return image.stream()
+                .filter(not(seaMonsters::contains))
+                .count();
+    }
+
+    private Set<Point> searchMonsters(Set<Point> image) {
+        Set<Point> monsters = new HashSet<>(image.size());
+
+        Set<Point> monster = Set.of(
+                new Point(0, 0),
+                new Point(5, 0),
+                new Point(6, 0),
+                new Point(11, 0),
+                new Point(12, 0),
+                new Point(17, 0),
+                new Point(18, 0),
+                new Point(19, 0),
+                new Point(1, 1),
+                new Point(4, 1),
+                new Point(7, 1),
+                new Point(10, 1),
+                new Point(13, 1),
+                new Point(16, 1),
+                new Point(18, -1)
+        );
+
+        for (Point p : image) {
+            final Set<Point> possibleMonster = monster.stream()
+                    .map(p::add)
+                    .collect(Collectors.toSet());
+
+            if (image.containsAll(possibleMonster)) {
+                monsters.addAll(possibleMonster);
+            }
+        }
+
+        return monsters;
     }
 
     private Set<Point> getImage(Map<Point, Tile> tiles, int dim) {
         Set<Point> image = new HashSet<>(tiles.size());
         for (int y = 0; y < dim; y++) {
-            final int finalY = y;
-            for (int lineY = 0; lineY < 10; lineY++) {
-                final int finalLineY = lineY;
+            for (int lineY = 1; lineY < 9; lineY++) {
                 for (int x = 0; x < dim; x++) {
-                    final int finalX = x;
                     Tile t = tiles.get(new Point(x, y));
 
-                    StreamEx.of(t.bits[lineY])
-                            //.skip(1)
-                            .map(Indexed.map())
-                            .filter(Indexed::getValue)
-                            .map(b -> new Point(b.getIndex() + finalX * 10, finalLineY + finalY * 10))
-                            //.limit(8)
-                            .forEach(image::add);
+                    for (int lineX = 1; lineX < 9; lineX++) {
+                        if (t.bits[lineY][lineX])
+                            image.add(new Point(lineX - 1 + x * 8, lineY - 1 + y * 8));
+                    }
                 }
             }
         }
 
-        for (int y = 0; y < 30; y++) {
-            for (int x = 0; x < 30; x++) {
-                if (image.contains(new Point(x, y))) System.out.print("#");
-                else System.out.print(".");
-
-                if (x % 10 == 9) System.out.print(" ");
-            }
-            if (y % 10 == 9) System.out.println();
-            System.out.println();
-        }
-
+        // for (int y = 0; y < 24; y++) {
+        //     for (int x = 0; x < 24; x++) {
+        //         if (image.contains(new Point(x, y))) System.out.print("#");
+        //         else System.out.print(".");
+        //
+        //         if (x % 8 == 7) System.out.print(" ");
+        //     }
+        //     if (y % 8 == 7) System.out.println();
+        //     System.out.println();
+        // }
 
         return image;
     }
