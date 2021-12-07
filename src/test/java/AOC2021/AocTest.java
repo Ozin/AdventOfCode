@@ -37,12 +37,12 @@ public interface AocTest {
         List<String> testContent = new YamlReader(new InputStreamReader(is.openStream())).read(List.class);
 
         final String testName = is.toString().substring(78);
-        final DynamicTest getA = testContent.get(1) != null && Arrays.stream(dayImplementation.getClass().getDeclaredMethods()).map(Method::getName).anyMatch("a"::equals) ? dynamicTest(
+        final DynamicTest getA = Arrays.stream(dayImplementation.getClass().getDeclaredMethods()).map(Method::getName).anyMatch("a"::equals) ? dynamicTest(
                 testName + " - getA",
                 getExecutable(dayImplementation, "a", testContent.get(0), testContent.get(1))
         ) : null;
 
-        final DynamicTest getB = testContent.get(2) != null && Arrays.stream(dayImplementation.getClass().getDeclaredMethods()).map(Method::getName).anyMatch("b"::equals) ? dynamicTest(
+        final DynamicTest getB = Arrays.stream(dayImplementation.getClass().getDeclaredMethods()).map(Method::getName).anyMatch("b"::equals) ? dynamicTest(
                 testName + " - getB",
                 getExecutable(dayImplementation, "b", testContent.get(0), testContent.get(2))
         ) : null;
