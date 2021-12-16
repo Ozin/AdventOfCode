@@ -8,6 +8,9 @@ import one.util.streamex.EntryStream;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 
+import java.util.function.IntBinaryOperator;
+import java.util.function.IntUnaryOperator;
+
 import static java.util.function.Predicate.not;
 
 @Value
@@ -47,21 +50,29 @@ public class Point {
 
     public EntryStream<Direction, Point> getNeighbours() {
         return EntryStream.of(
-            Direction.LEFT, addX(-1),
-            Direction.RIGHT, addX(1),
-            Direction.UP, addY(-1),
-            Direction.DOWN, addY(1)
+                Direction.LEFT, addX(-1),
+                Direction.RIGHT, addX(1),
+                Direction.UP, addY(-1),
+                Direction.DOWN, addY(1)
         );
     }
 
     public StreamEx<Point> getNeighboursIncludingDiagonal() {
         return IntStreamEx.range(-1, 2).boxed()
-            .cross(IntStreamEx.range(-1, 2).boxed().toList())
-            .mapKeyValue((x, y) -> this.addX(x).addY(y))
-            .filter(not(this::equals));
+                .cross(IntStreamEx.range(-1, 2).boxed().toList())
+                .mapKeyValue((x, y) -> this.addX(x).addY(y))
+                .filter(not(this::equals));
     }
 
     public Point add(Point point) {
         return this.addX(point.getX()).addY(point.getY());
+    }
+
+    public Point withByX(IntUnaryOperator mapper) {
+        return withX(mapper.applyAsInt(x));
+    }
+
+    public Point withByY(IntUnaryOperator mapper) {
+        return withY(mapper.applyAsInt(y));
     }
 }
