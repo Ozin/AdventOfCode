@@ -40,13 +40,12 @@ public class Day15 {
             final int originalY = point.getY() % maxY;
             final int originalValue = map.get(new Point(originalX, originalY)) - 1;
 
-            final int newValue = (point.getX() / maxX + point.getY() / maxY
-                                  + originalValue) % 9;
+            final int newValue = (point.getX() / maxX + point.getY() / maxY + originalValue) % 9;
 
             return newValue + 1;
         };
 
-        return solve(calculatedMap, maxX, maxY);
+        return solve(calculatedMap, maxX * 5, maxY * 5);
     }
 
     private String solve(final Function<Point, Integer> map, final int maxX, final int maxY) {
