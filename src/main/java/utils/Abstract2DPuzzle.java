@@ -23,7 +23,7 @@ public abstract class Abstract2DPuzzle extends AbstractDay<Map<utils.Point, Char
         return map;
     }
 
-    public void printMap(final Map<Point, Character> map) {
+    public static void printMap(final Map<Point, Character> map) {
         final int maxX = map.keySet().stream().mapToInt(Point::getX).max().orElseThrow();
         final int maxY = map.keySet().stream().mapToInt(Point::getY).max().orElseThrow();
         final int minX = map.keySet().stream().mapToInt(Point::getX).min().orElseThrow();
