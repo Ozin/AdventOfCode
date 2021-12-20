@@ -34,6 +34,8 @@ public class Day15 {
                 .mapKeyValue(Point::new)
                 .collect(HashSet.collector());
 
+        Set<Point> neighbors = HashSet.empty();
+
         Map<Point, Integer> tentativeDistance = HashMap.of(new Point(0, 0), 0);
         Point current = new Point(0, 0);
         while (!unvisited.isEmpty()) {
@@ -45,6 +47,7 @@ public class Day15 {
                     .mapValues(updateDistance(tentativeDistance, current));
 
             unvisited = unvisited.remove(current);
+            neighbors = neighbors.addAll(newNeighbours.keySet()).intersect(unvisited);
 
             tentativeDistance = newNeighbours
                     .merge(tentativeDistance, Math::min);
@@ -52,7 +55,7 @@ public class Day15 {
             if (!unvisited.isEmpty()) {
                 final Comparator<Tuple2<Point, Integer>> comparator1 = Comparator.comparingInt(t -> t._2);
                 final Comparator<Tuple2<Point, Integer>> comparator2 = Comparator.comparingInt(t -> t._1.getX() + t._1.getY());
-                current = unvisited.toMap(p -> p, tentativeDistance::get)
+                current = neighbors.toMap(p -> p, tentativeDistance::get)
                         .filterValues(Option::isDefined)
                         .mapValues(Option::get)
                         .minBy(comparator1.thenComparing(comparator2.reversed()))
@@ -60,7 +63,7 @@ public class Day15 {
             }
 
             if (unvisited.length() % 100 == 0)
-                System.out.printf("%6s, %23s, %s%n", unvisited.length(), current, tentativeDistance.size());
+                System.out.printf("%6s, %23s, %6s, %6s%n", unvisited.length(), current, tentativeDistance.size(), neighbors.size());
         }
 
         // Abstract2DPuzzle.printMap(tentativeDistance.filterValues(v -> Integer.MAX_VALUE != v).mapValues(String::valueOf).mapValues(s -> s.charAt(0)).toJavaMap());
