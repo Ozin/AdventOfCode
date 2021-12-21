@@ -1,5 +1,7 @@
 package AOC2021.day16.packet;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 public interface Packet {
@@ -11,22 +13,6 @@ public interface Packet {
         return Type.forId(readInt(binaryInput, initialIndex + 3, 3))
                 .createPacket(binaryInput, initialIndex);
     }
-
-    int getInitialIndex();
-
-    String getInput();
-
-    int getNextIndex();
-
-    default int getVersion() {
-        return readInt(getInput(), getInitialIndex(), 3);
-    }
-
-    default Type getType() {
-        return Type.forId(readInt(getInput(), getInitialIndex() + 3, 3));
-    }
-
-    long getValue();
 
     static int readInt(final String input, final int index, final int length) {
         return Integer.parseInt(readString(input, index, length), 2);
@@ -47,5 +33,68 @@ public interface Packet {
         return sb.toString();
     }
 
-    Stream<Packet> traverseTree();
+    int getInitialIndex();
+
+    String getInput();
+
+    default int getVersion() {
+        return readInt(getInput(), getInitialIndex(), 3);
+    }
+
+    default Type getType() {
+        return Type.forId(readInt(getInput(), getInitialIndex() + 3, 3));
+    }
+
+    default int getNextIndex() {
+        if (getLengthTypeId() == 0) return getInitialIndex() + 7 + 15 + getSubPacketsLength();
+        else {
+            final List<Packet> subPackets = getSubPackets();
+            return subPackets.get(subPackets.size() - 1).getNextIndex();
+        }
+    }
+
+    default Stream<Packet> traverseTree() {
+        return Stream.concat(
+                Stream.of(this),
+                getSubPackets().stream().flatMap(Packet::traverseTree)
+        );
+    }
+
+    default int getSubPacketsLength() {
+        if (getLengthTypeId() == 0) {
+            return Packet.readInt(getInput(), getInitialIndex() + 7, 15);
+        } else if (getLengthTypeId() == 1)
+            return Packet.readInt(getInput(), getInitialIndex() + 7, 11);
+
+        throw new IllegalArgumentException("unsupported length type: " + getLengthTypeId());
+    }
+
+    default List<Packet> getSubPackets() {
+        List<Packet> subPackets = new ArrayList<>();
+
+        if (getLengthTypeId() == 0) {
+            for (int index = getInitialIndex() + 7 + 15; index < getInitialIndex() + 7 + 15 + getSubPacketsLength(); ) {
+                final Packet newPacket = Packet.of(index, getInput());
+
+                index = newPacket.getNextIndex();
+                subPackets.add(newPacket);
+            }
+        } else {
+            int index = getInitialIndex() + 7 + 11;
+            for (int i = 0; i < getSubPacketsLength(); i++) {
+                final Packet newPacket = Packet.of(index, getInput());
+
+                index = newPacket.getNextIndex();
+                subPackets.add(newPacket);
+            }
+        }
+
+        return subPackets;
+    }
+
+    default int getLengthTypeId() {
+        return Packet.readInt(getInput(), getInitialIndex() + 6, 1);
+    }
+
+    long getValue();
 }

@@ -1,6 +1,6 @@
 package AOC2021;
 
-import AOC2021.day16.packet.LiteralPacket;
+import AOC2021.day16.packet.ConstantPacket;
 import AOC2021.day16.packet.OperatorPacket;
 import AOC2021.day16.packet.Packet;
 import AOC2021.day16.packet.Type;
@@ -19,12 +19,12 @@ public class PacketTest {
         Packet p = Packet.of(Packet.hexToBin(hex));
 
         // THEN
-        assertInstanceOf(LiteralPacket.class, p);
+        assertInstanceOf(ConstantPacket.class, p);
         assertEquals("110100101111111000101000", p.getInput());
         assertEquals(0, p.getInitialIndex());
         assertEquals(2021, p.getValue());
         assertEquals(21, p.getNextIndex());
-        assertEquals(Type.LITERAL, p.getType());
+        assertEquals(Type.CONSTANT, p.getType());
         assertEquals(6, p.getVersion());
         assertEquals(6, p.getVersion());
     }
@@ -42,7 +42,7 @@ public class PacketTest {
         assertEquals("00111000000000000110111101000101001010010001001000000000", p.getInput());
         assertEquals(0, p.getInitialIndex());
         assertEquals(1, p.getVersion());
-        assertEquals(Type.OPERATOR, p.getType());
+        assertEquals(null, p.getType());
         assertEquals(0, p.getLengthTypeId());
         assertEquals(49, p.getNextIndex());
         assertEquals(27, p.getSubPacketsLength());
@@ -64,7 +64,7 @@ public class PacketTest {
         assertEquals("11101110000000001101010000001100100000100011000001100000", p.getInput());
         assertEquals(0, p.getInitialIndex());
         assertEquals(7, p.getVersion());
-        assertEquals(Type.OPERATOR2, p.getType());
+        assertEquals(null, p.getType());
         assertEquals(1, p.getLengthTypeId());
         assertEquals(51, p.getNextIndex());
         assertEquals(3, p.getSubPacketsLength());

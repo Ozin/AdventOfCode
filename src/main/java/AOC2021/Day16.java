@@ -11,7 +11,8 @@ public class Day16 {
     }
 
     protected String b(final String[] input) throws Exception {
-        return null;
+        final Packet root = Packet.of(Packet.hexToBin(input[0]));
+        return "" + root.getValue();
     }
 
 }

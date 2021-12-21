@@ -6,14 +6,15 @@ import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 public enum Type {
-    LITERAL(4, LiteralPacket::new),
-    OPERATOR(6, OperatorPacket::new),
-    OPERATOR3(2, OperatorPacket::new),
-    OPERATOR4(0, OperatorPacket::new),
-    OPERATOR5(5, OperatorPacket::new),
-    OPERATOR6(1, OperatorPacket::new),
-    OPERATOR7(7, OperatorPacket::new),
-    OPERATOR2(3, OperatorPacket::new);
+    SUM(0, SumPacket::new),
+    PRODUCT(1, ProductPacket::new),
+    MINIMUM(2, MinimumPacket::new),
+    MAXIMUM(3, MaximumPacket::new),
+    CONSTANT(4, ConstantPacket::new),
+    GREATER_THAN(5, GreaterThanPacket::new),
+    LESS_THAN(6, LessThanPacket::new),
+    EQUAL_TO(7, EqualToPacket::new),
+    ;
 
     private final int id;
     private final static Map<Integer, Type> typesForId = new HashMap<>();
