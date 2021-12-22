@@ -1,86 +1,144 @@
 package AOC2021;
 
 
+import one.util.streamex.IntStreamEx;
+
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
 public class Day18 {
 
     protected String a(final String[] input) throws Exception {
-        return "" + SnailfishNumber.parse("[1,2]");
+        return "" + magnitude(Stream.of(input).reduce(this::add).get());
     }
 
     protected String b(final String[] input) throws Exception {
-        return "" + null;
+        return "" + io.vavr.collection.Stream.of(input)
+                .crossProduct(2)
+                .map(s -> this.add(s.head(), s.tail().head()))
+                .map(this::magnitude)
+                .max().get();
     }
 
-    static abstract class SnailfishNumber {
-        public SnailfishNumberNode add(SnailfishNumber other) {
-            return new SnailfishNumberNode(this, other);
-        }
+    public int magnitude(final String snailfishNumber) {
+        return magnitudeWithParantheses(snailfishNumber.replaceAll(Pattern.quote("["), "(").replaceAll(Pattern.quote("]"), ")"));
+    }
 
-        public SnailfishNumberNode reduce() {
-            
-        }
+    private int magnitudeWithParantheses(final String snailfishNumber) {
+        if (snailfishNumber.matches("^\\d+$")) return Integer.parseInt(snailfishNumber);
 
-        public static SnailfishNumber parse(String number) {
-            return parse(number, 0);
-        }
+        final String[] subGroups = findLeftRight(snailfishNumber);
 
-        private static SnailfishNumber parse(String number, int start) {
-            if (Character.isDigit(number.charAt(start))) {
-                final int endOfDigits = findEndOfDigits(number, start);
-                return new SnailfishNumberValue(Integer.parseInt(number.substring(start, endOfDigits)));
+        return 3 * magnitudeWithParantheses(subGroups[0])
+               + 2 * magnitudeWithParantheses(subGroups[1]);
+    }
+
+    private String[] findLeftRight(final String snailfishNumber) {
+        final Matcher simple = Pattern.compile("^\\((\\d+),(\\d+)\\)$").matcher(snailfishNumber);
+        if (simple.find()) return new String[]{simple.group(1), simple.group(2)};
+
+        final Matcher simple2 = Pattern.compile("^\\((\\d+),(.*)\\)$").matcher(snailfishNumber);
+        if (simple2.find()) return new String[]{simple2.group(1), simple2.group(2)};
+
+
+        // Source: https://stackoverflow.com/a/47162099
+        final Matcher matcher = Pattern.compile("(?=\\()(?=((?:(?=.*?\\((?!.*?\\2)(.*\\)(?!.*\\3).*))(?=.*?\\)(?!.*?\\3)(.*)).)+?.*?(?=\\2)[^(]*(?=\\3$)))").matcher(snailfishNumber);
+        matcher.find();
+        matcher.find();
+        final String firstPart = matcher.group(1);
+
+        return new String[]{
+                firstPart,
+                snailfishNumber.substring(matcher.end(1) + 1, snailfishNumber.length() - 1)
+        };
+    }
+
+    public String add(final String left, final String right) {
+        return reduce("[" + left + "," + right + "]");
+    }
+
+    public String reduce(String snailfishNumber) {
+        while (true) {
+            final Optional<int[]> explosion = findExplosion(snailfishNumber);
+            if (explosion.isPresent()) {
+                snailfishNumber = explode(snailfishNumber, explosion.get()[0], explosion.get()[1]);
+                continue;
             }
 
-            final int correspondingComma = findCorrespondingComma(number, start + 1);
-            return new SnailfishNumberNode(
-                    parse(number, start + 1),
-                    parse(number, correspondingComma + 1));
-        }
+            final Matcher split = Pattern.compile("(\\d{2,})").matcher(snailfishNumber);
+            if (split.find()) {
+                final int tooBigNumber = Integer.parseInt(split.group(0));
+                snailfishNumber = snailfishNumber.substring(0, split.start())
+                                  + String.format("[%d,%d]", tooBigNumber / 2, (tooBigNumber + 1) / 2)
+                                  + snailfishNumber.substring(split.end());
 
-        private static int findCorrespondingComma(String number, int start) {
-            if (number.charAt(start) != '[' && !Character.isDigit(number.charAt(start)))
-                throw new IllegalArgumentException("must have opening bracket or number at " + start + " in " + number);
-
-            int count = 0;
-            for (int i = start; i < number.length(); i++) {
-                final char currentChar = number.charAt(i);
-
-                if (currentChar == '[') count++;
-                if (currentChar == ']') count--;
-
-                if (count == 0 && currentChar == ',') return i;
+                continue;
             }
 
-            throw new IllegalArgumentException("couldn't find corresponding closing bracket at " + start + " in " + number);
+            break;
         }
 
-        private static int findEndOfDigits(String number, int start) {
-            final int nextComma = number.indexOf(",", start);
-            final int nextBracket = number.indexOf("]", start);
-            if (nextComma == -1) return nextBracket;
-            if (nextBracket == -1) return nextComma;
-            return Math.min(nextComma, nextBracket);
-        }
+        return snailfishNumber;
     }
 
-    static class SnailfishNumberValue extends SnailfishNumber {
-        int value;
+    private Optional<int[]> findExplosion(final String snailfishNumber) {
+        int count = 0;
+        for (int i = 0; i < snailfishNumber.length(); i++) {
+            final char curChar = snailfishNumber.charAt(i);
 
-        public SnailfishNumberValue(int value) {
-            this.value = value;
-        }
+            if (Character.isDigit(curChar)) continue;
 
-        public int getValue() {
-            return value;
+            if (curChar == '[') count++;
+            else if (curChar == ']') count--;
+
+            if (count == 5) {
+                return Optional.of(new int[]{
+                        i + 1,
+                        snailfishNumber.indexOf(']', i)
+                });
+            }
         }
+        return Optional.empty();
     }
 
-    static class SnailfishNumberNode extends SnailfishNumber {
-        SnailfishNumber left;
-        SnailfishNumber right;
+    private String explode(final String snailfishNumber, final int start, final int end) {
+        final int[] numbers = Stream.of(snailfishNumber.substring(start, end).split(",")).mapToInt(Integer::parseInt).toArray();
 
-        public SnailfishNumberNode(SnailfishNumber left, SnailfishNumber right) {
-            this.left = left;
-            this.right = right;
-        }
+        final String replacedWithZero = snailfishNumber.substring(0, start - 1)
+                                        + 0
+                                        + snailfishNumber.substring(end + 1);
+
+        final Optional<Integer> nextLeftIndex = IntStreamEx.range(start - 1)
+                .map(i -> start - 1 - i - 1)
+                .mapToEntry(i -> i, replacedWithZero::charAt)
+                .filterValues(Character::isDigit)
+                .filterKeys(i -> !Character.isDigit(replacedWithZero.charAt(i - 1)))
+                .keys()
+                .findFirst();
+
+        final Optional<Integer> nextRightIndex = IntStreamEx.range(start + 1, replacedWithZero.length())
+                .mapToEntry(i -> i, replacedWithZero::charAt)
+                .filterValues(Character::isDigit)
+                .keys()
+                .findFirst();
+
+        final String explodedRight = nextRightIndex
+                .map(i -> explode(numbers[1], replacedWithZero, i))
+                .orElse(replacedWithZero);
+
+        return nextLeftIndex
+                .map(i -> explode(numbers[0], explodedRight, i))
+                .orElse(explodedRight);
+    }
+
+    private String explode(final int number, final String snailfishNumber, final Integer nextLeftIndex) {
+        final String prefix = snailfishNumber.substring(0, nextLeftIndex);
+        final Matcher matcher = Pattern.compile("^(\\d+)(.*)$").matcher(snailfishNumber.substring(nextLeftIndex));
+        matcher.find();
+        return prefix
+               + (Integer.parseInt(matcher.group(1)) + number)
+               + matcher.group(2);
     }
 }
