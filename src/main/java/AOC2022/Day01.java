@@ -5,31 +5,23 @@ import java.util.Comparator;
 
 public class Day01 {
     public static void main(final String[] args) {
-        final String input = input();
-        System.out.printf("Solution for the first riddle: %s%n", one(input));
-        System.out.printf("Solution for the second riddle: %s%n", two(input));
+        System.out.printf("Solution for the first riddle: %s%n", getCalories(1));
+        System.out.printf("Solution for the second riddle: %s%n", getCalories(3));
     }
 
-    private static Object one(final String input) {
-        return Arrays.stream(input.split("\n\n"))
-                     .mapToInt(elf -> Arrays.stream(elf.split("\n"))
-                                            .mapToInt(Integer::parseInt)
-                                            .sum()
-                     )
-                     .max()
-                     .getAsInt();
-    }
-
-    private static Object two(final String input) {
-        return Arrays.stream(input.split("\n\n"))
-                     .mapToInt(elf -> Arrays.stream(elf.split("\n"))
-                                            .mapToInt(Integer::parseInt)
-                                            .sum()
-                     )
-                     .boxed().sorted(Comparator.reverseOrder())
-                     .mapToInt(Integer::intValue)
-                     .limit(3)
+    private static int getCalories(final int howManyTopElves) {
+        return Arrays.stream(input().split("\n\n"))
+                     .map(Elf::new)
+                     .sorted(Comparator.comparingInt(Elf::calories).reversed())
+                     .limit(howManyTopElves)
+                     .mapToInt(Elf::calories)
                      .sum();
+    }
+
+    record Elf(int calories) {
+        public Elf(final String calories) {
+            this(Arrays.stream(calories.split("\n")).mapToInt(Integer::parseInt).sum());
+        }
     }
 
     private static String testInput() {
