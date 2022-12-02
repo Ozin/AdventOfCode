@@ -5,6 +5,7 @@ import io.vavr.collection.List;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -96,9 +97,9 @@ public class Day19 {
             return rotations().contains(other);
         }
 
-        public List<Beacon> rotations() {
+        public Set<Beacon> rotations() {
             //noinspection SuspiciousNameCombination
-            return List.of(
+            return Set.of(
                     new Beacon(x, y, z),
                     new Beacon(x, -y, -z),
                     new Beacon(x, z, -y),
