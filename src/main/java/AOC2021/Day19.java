@@ -1,15 +1,14 @@
 package AOC2021;
 
 
+import io.vavr.collection.HashSet;
 import io.vavr.collection.List;
+import io.vavr.collection.Set;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static java.util.function.Predicate.not;
 
 public class Day19 {
 
@@ -29,8 +28,7 @@ public class Day19 {
             final Matcher matcher = SCANNER_PATTERN.matcher(s);
             if (matcher.find()) {
                 if (!currentBeacons.isEmpty()) {
-                    final List<NeighborAwareBeacon> neighborAwareBeacons = getNeighborAwareBeacons(currentBeacons);
-                    final Scanner scanner = new Scanner(neighborAwareBeacons);
+                    final Scanner scanner = new Scanner(null);//currentBeacons);
                     scanners = scanners.append(scanner);
                 }
                 currentBeacons = List.empty();
@@ -42,44 +40,96 @@ public class Day19 {
         return scanners;
     }
 
-    private static List<NeighborAwareBeacon> getNeighborAwareBeacons(final List<Beacon> currentBeacons) {
-        return currentBeacons.map(b -> new NeighborAwareBeacon(b, currentBeacons));
-    }
-
     protected String b(final String[] input) throws Exception {
         return "" + null;
     }
 
-    record Scanner(List<NeighborAwareBeacon> beacons) {
+    record Scanner(Set<NeighborAwareBeacon> beacons) {
         public int overlaps(final Scanner other) {
             //return this.beacons.map(neighborAwareBeacon -> other.beacons.map(neighborAwareBeacon::overlap).max()).max();
             return 0;
         }
     }
 
-    record NeighborAwareBeacon(List<Beacon> neighbors) {
-        NeighborAwareBeacon(final Beacon self, final List<Beacon> neighbors) {
-            this(neighbors.map(self::relative).filter(not(new Beacon(0, 0, 0)::equals)));
+    record NeighborAwareBeacon(Beacon beacon, Set<Relation> neighbors) {
+        public static Set<NeighborAwareBeacon> fromScanner(final Set<Beacon> beacons) {
+            return beacons.map(singleBeacon -> fromScanner(singleBeacon, beacons));
         }
 
-        public List<NeighborAwareBeacon> rotations() {
-            return List.transpose(this.neighbors.map(Beacon::rotations)).map(NeighborAwareBeacon::new);
-        }
-
-        public int overlap(final NeighborAwareBeacon other) {
-            return this.rotations()
-                       .map(NeighborAwareBeacon::neighbors)
-                       .map(rotation -> other.neighbors.count(rotation::contains))
-                       .max()
-                       .get();
+        private static NeighborAwareBeacon fromScanner(final Beacon singleBeacon, final Set<Beacon> beacons) {
+            final Set<Relation> relations = beacons.map(otherBeacon -> new Relation(singleBeacon, otherBeacon));
+            return new NeighborAwareBeacon(singleBeacon, relations);
         }
     }
 
-    record Beacon(int x, int y, int z) implements Comparable<Beacon> {
+    record Relation(int x, int y, int z) implements Comparable<Relation> {
 
-        public static final Comparator<Beacon> BEACON_COMPARATOR = Comparator.comparingInt(Beacon::x)
-                                                                             .thenComparingInt(Beacon::y)
-                                                                             .thenComparingInt(Beacon::z);
+        public static final Comparator<Relation> RELATION_COMPARATOR = Comparator.comparingInt(Relation::x)
+                                                                                 .thenComparingInt(Relation::y)
+                                                                                 .thenComparingInt(Relation::z);
+
+        public Relation(final Beacon from, final Beacon to) {
+            this(from.x - to.x, from.y - to.y, from.z - to.z);
+        }
+
+        public boolean relativeEqual(final Relation other) {
+            return rotations().contains(other);
+        }
+
+        public Set<Relation> rotations() {
+            //noinspection SuspiciousNameCombination
+            return HashSet.of(
+                    new Relation(x, y, z),
+                    new Relation(x, -y, -z),
+                    new Relation(x, z, -y),
+                    new Relation(x, -z, y),
+                    new Relation(y, x, -z),
+                    new Relation(y, -x, z),
+                    new Relation(y, z, x),
+                    new Relation(y, -z, -x),
+                    new Relation(z, y, -x),
+                    new Relation(z, -y, x),
+                    new Relation(z, x, y),
+                    new Relation(z, -x, -y),
+                    new Relation(-x, y, -z),
+                    new Relation(-x, -y, z),
+                    new Relation(-x, z, y),
+                    new Relation(-x, -z, -y),
+                    new Relation(-y, x, z),
+                    new Relation(-y, -x, -z),
+                    new Relation(-y, z, -x),
+                    new Relation(-y, -z, x),
+                    new Relation(-z, x, -y),
+                    new Relation(-z, -x, y),
+                    new Relation(-z, y, x),
+                    new Relation(-z, -y, -x)
+            );
+        }
+
+        public Relation normalize() {
+            return rotations().toSortedSet().head();
+        }
+
+        private Relation rotateZ() {
+            //noinspection SuspiciousNameCombination
+            return new Relation(y, -x, z);
+        }
+
+        private Relation rotateY() {
+            return new Relation(z, y, -x);
+        }
+
+        private Relation rotateX() {
+            return new Relation(x, z, -y);
+        }
+
+        @Override
+        public int compareTo(final Relation o) {
+            return RELATION_COMPARATOR.compare(this, o);
+        }
+    }
+
+    record Beacon(int x, int y, int z) {
 
         public Beacon(final String s) {
             this(Arrays.stream(s.split(",")).mapToInt(Integer::parseInt).toArray());
@@ -93,56 +143,5 @@ public class Day19 {
             return new Beacon(x - other.x, y - other.y, z - other.z);
         }
 
-        public boolean relativeEqual(final Beacon other) {
-            return rotations().contains(other);
-        }
-
-        public Set<Beacon> rotations() {
-            //noinspection SuspiciousNameCombination
-            return Set.of(
-                    new Beacon(x, y, z),
-                    new Beacon(x, -y, -z),
-                    new Beacon(x, z, -y),
-                    new Beacon(x, -z, y),
-                    new Beacon(y, x, -z),
-                    new Beacon(y, -x, z),
-                    new Beacon(y, z, x),
-                    new Beacon(y, -z, -x),
-                    new Beacon(z, y, -x),
-                    new Beacon(z, -y, x),
-                    new Beacon(z, x, y),
-                    new Beacon(z, -x, -y),
-                    new Beacon(-x, y, -z),
-                    new Beacon(-x, -y, z),
-                    new Beacon(-x, z, y),
-                    new Beacon(-x, -z, -y),
-                    new Beacon(-y, x, z),
-                    new Beacon(-y, -x, -z),
-                    new Beacon(-y, z, -x),
-                    new Beacon(-y, -z, x),
-                    new Beacon(-z, x, -y),
-                    new Beacon(-z, -x, y),
-                    new Beacon(-z, y, x),
-                    new Beacon(-z, -y, -x)
-            );
-        }
-
-        private Beacon rotateZ() {
-            //noinspection SuspiciousNameCombination
-            return new Beacon(y, -x, z);
-        }
-
-        private Beacon rotateY() {
-            return new Beacon(z, y, -x);
-        }
-
-        private Beacon rotateX() {
-            return new Beacon(x, z, -y);
-        }
-
-        @Override
-        public int compareTo(final Beacon o) {
-            return BEACON_COMPARATOR.compare(this, o);
-        }
     }
 }
