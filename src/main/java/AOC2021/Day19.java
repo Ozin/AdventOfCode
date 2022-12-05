@@ -21,21 +21,21 @@ public class Day19 {
 
     public List<Scanner> getScanners(final String[] input) {
         List<Scanner> scanners = List.empty();
-        List<Beacon> currentBeacons = List.empty();
+        Set<Beacon> currentBeacons = HashSet.empty();
         for (final String s : input) {
             if (s.isBlank()) continue;
 
             final Matcher matcher = SCANNER_PATTERN.matcher(s);
             if (matcher.find()) {
                 if (!currentBeacons.isEmpty()) {
-                    final Scanner scanner = new Scanner(null);//currentBeacons);
+                    final Scanner scanner = new Scanner(NeighborAwareBeacon.fromScanner(currentBeacons));
                     scanners = scanners.append(scanner);
                 }
-                currentBeacons = List.empty();
+                currentBeacons = HashSet.empty();
                 continue;
             }
 
-            currentBeacons = currentBeacons.append(new Beacon(s));
+            currentBeacons = currentBeacons.add(new Beacon(s));
         }
         return scanners;
     }
@@ -45,9 +45,13 @@ public class Day19 {
     }
 
     record Scanner(Set<NeighborAwareBeacon> beacons) {
-        public int overlaps(final Scanner other) {
-            //return this.beacons.map(neighborAwareBeacon -> other.beacons.map(neighborAwareBeacon::overlap).max()).max();
-            return 0;
+        public int countOverlap(final Scanner other) {
+            return this.beacons
+                           .map(neighborAwareBeacon -> other.beacons.map(neighborAwareBeacon::countOverlap)
+                                                                    .max()
+                                                                    .get())
+                           .max()
+                           .get();
         }
     }
 
@@ -59,6 +63,10 @@ public class Day19 {
         private static NeighborAwareBeacon fromScanner(final Beacon singleBeacon, final Set<Beacon> beacons) {
             final Set<Relation> relations = beacons.map(otherBeacon -> new Relation(singleBeacon, otherBeacon));
             return new NeighborAwareBeacon(singleBeacon, relations);
+        }
+
+        public int countOverlap(final NeighborAwareBeacon neighborAwareBeacon) {
+            return neighbors.count(relation -> neighborAwareBeacon.neighbors.exists(relation::relativeEqual));
         }
     }
 
