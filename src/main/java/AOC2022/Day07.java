@@ -1,6 +1,7 @@
 package AOC2022;
 
 
+import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.HashSet;
 import io.vavr.collection.Map;
@@ -19,6 +20,12 @@ public class Day07 {
 
     private static Object one(final String[] input) {
         final Map<String, Integer> files = getFiles(input);
+        final Map<String, Integer> folderSizes = findFolderSizes(files);
+
+        return folderSizes.values().filter(size -> size <= 100_000).reduce(Integer::sum);
+    }
+
+    private static Map<String, Integer> findFolderSizes(final Map<String, Integer> files) {
         Map<String, Integer> folderSizes = HashMap.empty();
 
         for (final var e : files) {
@@ -27,8 +34,7 @@ public class Day07 {
                 folderSizes = folderSizes.put(parentFolder, e._2, Integer::sum);
             }
         }
-
-        return folderSizes.values().filter(size -> size <= 100_000).reduce(Integer::sum);
+        return folderSizes;
     }
 
     private static Set<String> findParentFolders(final String[] split) {
@@ -73,7 +79,17 @@ public class Day07 {
     }
 
     private static Object two(final String[] input) {
-        return null;
+        final Map<String, Integer> files = getFiles(input);
+        final Map<String, Integer> folderSizes = findFolderSizes(files);
+
+        final int maxSpace = 70_000_000;
+        final int required = 30_000_000;
+        final int takenSpace = folderSizes.get("/").get();
+        final int freeSpace = maxSpace - takenSpace;
+
+        final int needed = required - freeSpace;
+
+        return folderSizes.filter((name, size) -> size >= needed).minBy(Tuple2::_2);
     }
 
     private static String[] testInput() {
