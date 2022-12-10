@@ -28,7 +28,7 @@ public class Day19 {
             final Matcher matcher = SCANNER_PATTERN.matcher(s);
             if (matcher.find()) {
                 if (!currentBeacons.isEmpty()) {
-                    final Scanner scanner = new Scanner(NeighborAwareBeacon.fromScanner(currentBeacons));
+                    final Scanner scanner = null;//new Scanner(NeighborAwareBeacon.fromScanner(currentBeacons));
                     scanners = scanners.append(scanner);
                 }
                 currentBeacons = HashSet.empty();
@@ -44,30 +44,7 @@ public class Day19 {
         return "" + null;
     }
 
-    record Scanner(Set<NeighborAwareBeacon> beacons) {
-        public int countOverlap(final Scanner other) {
-            return this.beacons
-                           .map(neighborAwareBeacon -> other.beacons.map(neighborAwareBeacon::countOverlap)
-                                                                    .max()
-                                                                    .get())
-                           .max()
-                           .get();
-        }
-    }
-
-    record NeighborAwareBeacon(Beacon beacon, Set<Relation> neighbors) {
-        public static Set<NeighborAwareBeacon> fromScanner(final Set<Beacon> beacons) {
-            return beacons.map(singleBeacon -> fromScanner(singleBeacon, beacons));
-        }
-
-        private static NeighborAwareBeacon fromScanner(final Beacon singleBeacon, final Set<Beacon> beacons) {
-            final Set<Relation> relations = beacons.map(otherBeacon -> new Relation(singleBeacon, otherBeacon));
-            return new NeighborAwareBeacon(singleBeacon, relations);
-        }
-
-        public int countOverlap(final NeighborAwareBeacon neighborAwareBeacon) {
-            return neighbors.count(relation -> neighborAwareBeacon.neighbors.exists(relation::relativeEqual));
-        }
+    record Scanner(Set<Beacon> beacons) {
     }
 
     record Relation(int x, int y, int z) implements Comparable<Relation> {
