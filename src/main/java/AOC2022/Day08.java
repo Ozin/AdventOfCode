@@ -5,11 +5,8 @@ import java.util.Arrays;
 
 public class Day08 {
     public static void main(final String[] args) {
-        System.out.printf("Solution for the first riddle: %s%n", one(input()));
-        //List.of(testInput().split("\n")).map(Day06::one));
-        //*/
+        System.out.printf("Solution for the first riddle: %s%n", one(testInput()));
         System.out.printf("Solution for the second riddle: %s%n", two(input()));
-        //List.of(testInput().split("\n")).map(Day06::two));
     }
 
     private static Object one(final char[][] input) {
@@ -25,59 +22,84 @@ public class Day08 {
         return count;
     }
 
-    private static boolean isVisible(final int y, final int x, final char[][] input) {
-        if (y == 0 || y == input.length - 1) {
-            return true;
-        }
-
-        if (x == 0 || x == input[y].length - 1) {
-            return true;
-        }
-
-        return visibleFromEast(y, x, input)
-               || visibleFromWest(y, x, input)
-               || visibleFromNorth(y, x, input)
-               || visibleFromSouth(y, x, input);
-    }
-
-    private static boolean visibleFromSouth(final int y, final int x, final char[][] input) {
-        final char current = input[y][x];
-        for (int tempY = y + 1; tempY < input[y].length; tempY++) {
-            if (current <= input[tempY][x]) return false;
-        }
-        return true;
-    }
-
-    private static boolean visibleFromNorth(final int y, final int x, final char[][] input) {
-        final char current = input[y][x];
-        for (int tempY = y - 1; tempY >= 0; tempY--) {
-            if (current <= input[tempY][x]) return false;
-        }
-        return true;
-    }
-
-    private static boolean visibleFromWest(final int y, final int x, final char[][] input) {
-        final char current = input[y][x];
-        for (int tempX = x - 1; tempX >= 0; tempX--) {
-            if (current <= input[y][tempX]) return false;
-        }
-        return true;
-    }
-
-    private static boolean visibleFromEast(final int y, final int x, final char[][] input) {
-        final char current = input[y][x];
-        for (int tempX = x + 1; tempX < input[y].length; tempX++) {
-            if (current <= input[y][tempX]) return false;
-        }
-        return true;
-    }
-
     private static Object two(final char[][] input) {
-        return null;
+        int maxCount = 0;
+        for (int y = 0; y < input.length; y++) {
+            for (int x = 0; x < input[y].length; x++) {
+                final int countTop = viewUp(y, x, input);
+                final int countLeft = viewLeft(y, x, input);
+                final int countRight = viewRight(y, x, input);
+                final int countDown = viewDown(y, x, input);
+
+                final int count = countLeft * countRight * countTop * countDown;
+                maxCount = Math.max(maxCount, count);
+            }
+        }
+        return maxCount;
     }
 
-    private static String[] testInput() {
-        return null;
+    private static boolean isVisible(final int y, final int x, final char[][] input) {
+        final boolean viewRight = viewRight(y, x, input) == input[y].length - 1 - x;
+        final boolean viewLeft = viewLeft(y, x, input) == x;
+        final boolean viewUp = viewUp(y, x, input) == y;
+        final boolean viewDown = viewDown(y, x, input) == input.length - 1 - y;
+
+        return viewRight
+               || viewLeft
+               || viewUp
+               || viewDown;
+    }
+
+    private static int viewDown(final int y, final int x, final char[][] input) {
+        final char current = input[y][x];
+        int count = 0;
+        for (int tempY = y + 1; tempY < input[y].length; tempY++) {
+            count++;
+            if (current <= input[tempY][x]) break;
+        }
+        return count;
+    }
+
+    private static int viewUp(final int y, final int x, final char[][] input) {
+        final char current = input[y][x];
+        int count = 0;
+        for (int tempY = y - 1; tempY >= 0; tempY--) {
+            count++;
+            if (current <= input[tempY][x])
+                break;
+        }
+        return count;
+    }
+
+    private static int viewLeft(final int y, final int x, final char[][] input) {
+        final char current = input[y][x];
+        int count = 0;
+        for (int tempX = x - 1; tempX >= 0; tempX--) {
+            count++;
+            if (current <= input[y][tempX]) break;
+        }
+        return count;
+    }
+
+    private static int viewRight(final int y, final int x, final char[][] input) {
+        final char current = input[y][x];
+        int count = 0;
+        for (int tempX = x + 1; tempX < input[y].length; tempX++) {
+            count++;
+            if (current <= input[y][tempX]) break;
+        }
+        return count;
+    }
+
+    private static char[][] testInput() {
+        final String[] split = """
+                30373
+                25512
+                65332
+                33549
+                35390
+                """.stripIndent().split("\n");
+        return Arrays.stream(split).map(String::toCharArray).toArray(char[][]::new);
     }
 
     private static char[][] input() {
