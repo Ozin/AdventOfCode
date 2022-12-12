@@ -3,6 +3,7 @@ package AOC2022;
 
 import io.vavr.Tuple2;
 import io.vavr.collection.HashSet;
+import io.vavr.collection.List;
 import io.vavr.collection.Set;
 import io.vavr.collection.Stream;
 
@@ -13,40 +14,47 @@ public class Day09 {
     }
 
     private static Object one(final String[] input) {
+        return movingKnots(input, 2);
+    }
+
+    private static Object two(final String[] input) {
+        return movingKnots(input, 10);
+    }
+
+    private static int movingKnots(final String[] input, final int amountOfKnots) {
         final Stream<String> commands = Stream.of(input)
                                               .map(l -> l.split(" "))
                                               .map(l -> new Tuple2<>(l[0], Integer.parseInt(l[1])))
                                               .flatMap(t -> Stream.fill(t._2, t._1));
 
-        Point h = new Point(0, 0);
-        Point t = h;
-
-        Set<Point> visited = HashSet.of(t);
+        List<Point> knots = List.fill(amountOfKnots, new Point(0, 0));
+        Set<Point> visited = HashSet.of(knots.last());
 
         for (final String command : commands) {
-            h = switch (command) {
-                case "R" -> h.right();
-                case "L" -> h.left();
-                case "U" -> h.up();
-                case "D" -> h.down();
-                default -> throw new IllegalArgumentException("Unknown command: " + command);
-            };
+            knots = knots.update(0, p -> interpretCommand(p, command));
 
-            t = moveT(h, t);
+            for (int i = 1; i < knots.size(); i++) {
+                knots = knots.update(i, moveT(knots.get(i - 1), knots.get(i)));
+            }
 
-            visited = visited.add(t);
+            visited = visited.add(knots.last());
         }
 
         return visited.size();
     }
 
-    private static Object two(final String[] input) {
-        return null;
+    private static Point interpretCommand(final Point p, final String command) {
+        return switch (command) {
+            case "R" -> p.right();
+            case "L" -> p.left();
+            case "U" -> p.up();
+            case "D" -> p.down();
+            default -> throw new IllegalArgumentException("Unknown command: " + command);
+        };
     }
 
-    private static Point moveT(final Point h, final Point t) {
-        if (Math.abs(h.x - t.x) <= 1 && Math.abs(h.y - t.y) <= 1)
-            return t;
+    public static Point moveT(final Point h, final Point t) {
+        if (Math.abs(h.x - t.x) <= 1 && Math.abs(h.y - t.y) <= 1) return t;
 
         final int newX = Math.max(-1, Math.min(h.x - t.x, 1));
         final int newY = Math.max(-1, Math.min(h.y - t.y, 1));
@@ -54,7 +62,7 @@ public class Day09 {
         return new Point(t.x + newX, t.y + newY);
     }
 
-    record Point(int x, int y) {
+    public record Point(int x, int y) {
         public Point up() {
             return new Point(x, y - 1);
         }
