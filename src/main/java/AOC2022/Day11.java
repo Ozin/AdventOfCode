@@ -1,6 +1,7 @@
 package AOC2022;
 
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -22,8 +23,8 @@ public class Day11 {
 
         for (int round = 0; round < 20; round++) {
             for (final Monkey monkey : monkeys) {
-                for (final int item : monkey.items) {
-                    final int worryLevel = monkey.operation.apply(item) / 3;
+                for (final BigInteger item : monkey.items) {
+                    final BigInteger worryLevel = monkey.operation.apply(item).divide(BigInteger.valueOf(3));
                     final boolean test = monkey.test.test(worryLevel);
                     if (test) monkeys.get(monkey.whenTrue).items.add(worryLevel);
                     else monkeys.get(monkey.whenFalse).items.add(worryLevel);
@@ -42,18 +43,45 @@ public class Day11 {
     }
 
     private static Object two(final String[] input) {
-        return null;
+        final List<Monkey> monkeys = Stream.of(input).map(Monkey::new).toList();
+        final List<Integer> carried = new ArrayList<>();
+
+        for (int round = 1; round < 10_001; round++) {
+            for (final Monkey monkey : monkeys) {
+                for (final BigInteger item : monkey.items) {
+                    final BigInteger worryLevel = monkey.operation.apply(item);
+                    final boolean test = monkey.test.test(worryLevel);
+                    if (test) monkeys.get(monkey.whenTrue).items.add(worryLevel);
+                    else monkeys.get(monkey.whenFalse).items.add(worryLevel);
+                }
+                monkey.carried += monkey.items.size();
+                monkey.items.clear();
+            }
+
+            if (round % 100 == 0 || round == 20 || round > 800) {
+                System.out.printf("%n=> %s%n", round);
+                monkeys.stream().map(Monkey::getCarried).forEach(System.out::println);
+            }
+        }
+
+
+        return monkeys.stream()
+                      .map(Monkey::getCarried)
+                      .sorted(Comparator.reverseOrder())
+                      .limit(2)
+                      .reduce((a, b) -> a * b)
+                      .get();
     }
 
     static class Monkey {
-        private final List<Integer> items;
-        private final Function<Integer, Integer> operation;
-        private final Predicate<Integer> test;
+        private final List<BigInteger> items;
+        private final Function<BigInteger, BigInteger> operation;
+        private final Predicate<BigInteger> test;
         private final int whenTrue;
         private final int whenFalse;
-        public int carried = 0;
+        public long carried = 0;
 
-        public Monkey(final List<Integer> items, final Function<Integer, Integer> operation, final Predicate<Integer> test, final int whenTrue, final int whenFalse) {
+        public Monkey(final List<BigInteger> items, final Function<BigInteger, BigInteger> operation, final Predicate<BigInteger> test, final int whenTrue, final int whenFalse) {
             this.items = items;
             this.operation = operation;
             this.test = test;
@@ -64,22 +92,22 @@ public class Day11 {
         public Monkey(final String input) {
             final var monkeyLines = input.split("\n");
             this.items = Arrays.stream(monkeyLines[1].substring(18).split(", "))
-                               .map(Integer::parseInt)
+                               .map(BigInteger::new)
                                .collect(Collectors.toCollection(ArrayList::new));
             this.operation = getOperation(monkeyLines[2]);
-            this.test = i -> i % Integer.parseInt(monkeyLines[3].substring(21)) == 0;
+            this.test = i -> i.mod(new BigInteger(monkeyLines[3].substring(21))).compareTo(BigInteger.ZERO) == 0;
             this.whenTrue = Integer.parseInt(monkeyLines[4].substring("    If true: throw to monkey ".length()));
             this.whenFalse = Integer.parseInt(monkeyLines[5].substring("    If false: throw to monkey ".length()));
         }
 
-        private static Function<Integer, Integer> getOperation(final String monkeyLine) {
-            final Function<Integer, Integer> operand = i -> monkeyLine.substring(25)
-                                                                      .equals("old") ? i : Integer.parseInt(monkeyLine.substring(
-                    25));
-            return (monkeyLine.charAt(23) == '*') ? i -> i * operand.apply(i) : i -> i + operand.apply(i);
+        private static Function<BigInteger, BigInteger> getOperation(final String monkeyLine) {
+            final Function<BigInteger, BigInteger> operand = i -> monkeyLine.substring(25)
+                                                                            .equals("old") ? i : new BigInteger(
+                    monkeyLine.substring(25));
+            return (monkeyLine.charAt(23) == '*') ? i -> i.multiply(operand.apply(i)) : i -> i.add(operand.apply(i));
         }
 
-        public int getCarried() {
+        public long getCarried() {
             return carried;
         }
     }
