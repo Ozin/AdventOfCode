@@ -6,6 +6,7 @@ import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import io.vavr.collection.Stream;
 import io.vavr.control.Option;
+import io.vavr.control.Try;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -22,8 +23,9 @@ public class Day12 {
         final var start = grid.find(t -> t._2 == 'S').get()._1;
         final var end = grid.find(t -> t._2 == 'E').get()._1;
 
-        final List<Point> findPath = dijkstra(start, end, graph);
-        return findPath.size() - 1;
+        final Try<List<Point>> findPath = dijkstra(start, end, graph);
+
+        return findPath.get().size() - 1;
     }
 
     private static Object two(final String[] input) {
@@ -32,10 +34,10 @@ public class Day12 {
         final var start = grid.filter(t -> t._2 == 'S' || t._2 == 'a').keySet();
         final var end = grid.find(t -> t._2 == 'E').get()._1;
 
-        return start.map(s -> dijkstra(s, end, graph)).map(List::size).filter(i -> i > 5).min().get() - 1;
+        return start.map(s -> dijkstra(s, end, graph)).flatMap(Try::iterator).map(List::size).min().get() - 1;
     }
 
-    private static <T> List<T> dijkstra(final T start, final T end, final Map<T, List<T>> graph) {
+    private static <T> Try<List<T>> dijkstra(final T start, final T end, final Map<T, List<T>> graph) {
         final var distance = new java.util.HashMap<T, Integer>();
         final var previous = new java.util.HashMap<T, T>();
 
@@ -43,16 +45,23 @@ public class Day12 {
         var q = graph.keySet().toList();
 
         while (q.nonEmpty()) {
-            final var t = q.sortBy(e -> distance.getOrDefault(e, Integer.MAX_VALUE)).pop2();
-            q = t._2;
+            final var t = q.minBy(e -> distance.getOrDefault(e, Integer.MAX_VALUE)).get();
 
-            for (final T neighbor : graph.get(t._1).toStream().flatMap(l -> l)) {
+            if (t.equals(end)) break;
+
+            q = q.remove(t);
+
+            for (final T neighbor : graph.get(t).toStream().flatMap(l -> l)) {
                 if (q.contains(neighbor)) {
-                    updateDistance(t._1, neighbor, distance, previous);
+                    updateDistance(t, neighbor, distance, previous);
                 }
             }
         }
-        return Stream.iterate(end, previous::get).takeWhile(Objects::nonNull).toList().reverse();
+
+        if (!previous.containsKey(end))
+            return Try.failure(new IllegalArgumentException("Can't find path between %s and %s".formatted(start, end)));
+
+        return Try.success(Stream.iterate(end, previous::get).takeWhile(Objects::nonNull).toList().reverse());
     }
 
     private static <T> void updateDistance(final T current, final T neighbor, final java.util.HashMap<T, Integer> distance, final java.util.HashMap<T, T> previous) {
