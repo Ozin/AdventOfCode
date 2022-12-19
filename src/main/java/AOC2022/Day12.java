@@ -8,7 +8,6 @@ import io.vavr.collection.Stream;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 
-import java.util.Objects;
 import java.util.function.Function;
 
 public class Day12 {
@@ -23,7 +22,7 @@ public class Day12 {
         final var start = grid.find(t -> t._2 == 'S').get()._1;
         final var end = grid.find(t -> t._2 == 'E').get()._1;
 
-        final Try<List<Point>> findPath = dijkstra(start, end, graph);
+        final Try<List<Point>> findPath = Dijkstra.dijkstra(start, end, graph);
 
         return findPath.get().size() - 1;
     }
@@ -34,50 +33,7 @@ public class Day12 {
         final var start = grid.filter(t -> t._2 == 'S' || t._2 == 'a').keySet();
         final var end = grid.find(t -> t._2 == 'E').get()._1;
 
-        return start.map(s -> dijkstra(s, end, graph)).flatMap(Try::iterator).map(List::size).min().get() - 1;
-    }
-
-    private static <T> Try<List<T>> dijkstra(final T start, final T end, final Map<T, List<T>> graph) {
-        final var distance = new java.util.HashMap<T, Integer>();
-        final var previous = new java.util.HashMap<T, T>();
-
-        distance.put(start, 0);
-        var q = graph.keySet().toList();
-
-        while (q.nonEmpty()) {
-            final var t = q.minBy(e -> distance.getOrDefault(e, Integer.MAX_VALUE)).get();
-
-            if (t.equals(end)) break;
-
-            q = q.remove(t);
-
-            for (final T neighbor : graph.get(t).toStream().flatMap(l -> l)) {
-                if (q.contains(neighbor)) {
-                    updateDistance(t, neighbor, distance, previous);
-                }
-            }
-        }
-
-        if (!previous.containsKey(end))
-            return Try.failure(new IllegalArgumentException("Can't find path between %s and %s".formatted(start, end)));
-
-        return Try.success(Stream.iterate(end, previous::get).takeWhile(Objects::nonNull).toList().reverse());
-    }
-
-    private static <T> void updateDistance(final T current, final T neighbor, final java.util.HashMap<T, Integer> distance, final java.util.HashMap<T, T> previous) {
-        final int alternative = getAlternative(current, distance);
-        if (alternative < distance.getOrDefault(neighbor, Integer.MAX_VALUE)) {
-            distance.put(neighbor, alternative);
-            previous.put(neighbor, current);
-        }
-    }
-
-    private static <T> int getAlternative(final T current, final java.util.HashMap<T, Integer> distance) {
-        try {
-            return Math.addExact(distance.getOrDefault(current, Integer.MAX_VALUE), 1);
-        } catch (final ArithmeticException e) {
-            return Integer.MAX_VALUE;
-        }
+        return start.map(s -> Dijkstra.dijkstra(s, end, graph)).flatMap(Try::iterator).map(List::size).min().get() - 1;
     }
 
     private static Map<Point, Character> parseGrid(final String[] lines) {
