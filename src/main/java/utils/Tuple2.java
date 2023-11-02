@@ -1,9 +1,4 @@
 package utils;
 
-import lombok.Value;
-
-@Value
-public class Tuple2<T, G> {
-    T a;
-    G b;
+public record Tuple2<T, G>(T a, G b) {
 }
