@@ -52,8 +52,8 @@ public class Day19Test implements AocTest {
 
         // WHEN
         final Day19.Scanner firstScanner = scanners.head();
-        final List<Integer> integers = scanners.map(firstScanner::countOverlap).toList();
-        System.out.println(integers.mkString("\n"));
+        // final List<Integer> integers = scanners.map(firstScanner::countOverlap).toList();
+        // System.out.println(integers.mkString("\n"));
 
 
         // THEN
