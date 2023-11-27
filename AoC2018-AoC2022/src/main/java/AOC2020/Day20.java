@@ -9,12 +9,15 @@ import utils.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.IntUnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,14 +54,14 @@ public class Day20 extends AbstractDay<List<Day20.Tile>> {
     @Override
     protected Object a(List<Tile> input) throws Exception {
         return StreamEx.of(input)
-                .mapToEntry(Tile::getNeighbors)
-                .mapValues(Set::stream)
-                .mapValues(s -> s.filter(Objects::nonNull).count())
-                .filterValues(i -> i == 2)
-                .keys()
-                .mapToLong(Tile::getId)
-                .reduce((a, b) -> a * b)
-                .getAsLong();
+                       .mapToEntry(Tile::getNeighbors)
+                       .mapValues(Set::stream)
+                       .mapValues(s -> s.filter(Objects::nonNull).count())
+                       .filterValues(i -> i == 2)
+                       .keys()
+                       .mapToLong(Tile::getId)
+                       .reduce((a, b) -> a * b)
+                       .getAsLong();
     }
 
     @Override
@@ -66,11 +69,11 @@ public class Day20 extends AbstractDay<List<Day20.Tile>> {
         final int dim = Math.toIntExact(Math.round(Math.sqrt(input.size())));
 
         Tile corner = StreamEx.of(input)
-                .mapToEntry(Tile::getNeighbors)
-                .filterValues(neighbors -> neighbors.size() == 2)
-                .keys()
-                .findFirst()
-                .get();
+                              .mapToEntry(Tile::getNeighbors)
+                              .filterValues(neighbors -> neighbors.size() == 2)
+                              .keys()
+                              .findFirst()
+                              .get();
 
         corner.flipX();
         while (corner.north != null || corner.west != null) {
@@ -80,12 +83,41 @@ public class Day20 extends AbstractDay<List<Day20.Tile>> {
         Map<Point, Tile> tiles = layoutTiles(dim, corner);
 
         final Set<Point> image = getImage(tiles, dim);
+        //print(null, image);
 
         final Set<Point> seaMonsters = searchMonsters(image);
 
+        //print(seaMonsters, image);
+
         return image.stream()
-                .filter(not(seaMonsters::contains))
-                .count();
+                      .filter(not(seaMonsters::contains))
+                      .count();
+    }
+
+    private static void print(Set<Point> seaMonsters, Set<Point> flipped) {
+        final IntSummaryStatistics yStat = flipped.stream().mapToInt(Point::getY).summaryStatistics();
+        final IntSummaryStatistics xStat = flipped.stream().mapToInt(Point::getX).summaryStatistics();
+
+        for (int y = yStat.getMin(); y < yStat.getMax(); y++) {
+            for (int x = xStat.getMin(); x < xStat.getMax(); x++) {
+                if (seaMonsters != null && seaMonsters.contains(new Point(x, y))) {
+                    System.out.print("O");
+                    continue;
+                }
+                if (flipped.contains(new Point(x, y))) {
+                    System.out.print("#");
+                    continue;
+                }
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
+    }
+
+    private Set<Point> flip(Set<Point> image, Function<Point, Integer> alterX, Function<Point, Integer> alterY) {
+        return image.stream()
+                    .map(p -> p.withX(alterX.apply(p)).withY(alterY.apply(p)))
+                    .collect(Collectors.toSet());
     }
 
     private Set<Point> searchMonsters(Set<Point> image) {
@@ -109,14 +141,30 @@ public class Day20 extends AbstractDay<List<Day20.Tile>> {
                 new Point(18, -1)
         );
 
-        for (Point p : image) {
-            final Set<Point> possibleMonster = monster.stream()
-                    .map(p::add)
-                    .collect(Collectors.toSet());
+        IntUnaryOperator invert = i -> -i;
 
-            if (image.containsAll(possibleMonster)) {
-                monsters.addAll(possibleMonster);
+        final List<Set<Point>> allRotations = List.of(
+                monster,
+                flip(monster, Point::getX, point -> -point.getY()),
+                flip(monster, point -> -point.getX(), Point::getY),
+                flip(monster, Point::getY, Point::getX),
+                flip(monster, point -> -point.getY(), Point::getX),
+                flip(monster, Point::getY, point -> -point.getX())
+        );
+
+        //print(null, flip(monster, i->i, i->i+1));
+
+        for (Set<Point> rotatedMonster : allRotations) {
+            for (Point p : image) {
+                final Set<Point> possibleMonster = rotatedMonster.stream()
+                                                                 .map(p::add)
+                                                                 .collect(Collectors.toSet());
+
+                if (image.containsAll(possibleMonster)) {
+                    monsters.addAll(possibleMonster);
+                }
             }
+            if (!monsters.isEmpty()) break;
         }
 
         return monsters;
@@ -207,12 +255,12 @@ public class Day20 extends AbstractDay<List<Day20.Tile>> {
         public Tile(List<String> input, Set<Tile> otherTiles) {
             id = Integer.parseInt(input.get(0).substring(5, input.get(0).length() - 1));
             bits = input.stream().skip(1)
-                    .map(s ->
-                            Stream.of(s.split(""))
-                                    .map(c -> c.equals("#"))
-                                    .toArray(Boolean[]::new)
-                    )
-                    .toArray(Boolean[][]::new);
+                        .map(s ->
+                                     Stream.of(s.split(""))
+                                           .map(c -> c.equals("#"))
+                                           .toArray(Boolean[]::new)
+                        )
+                        .toArray(Boolean[][]::new);
 
             StringBuilder eString = new StringBuilder();
             StringBuilder wString = new StringBuilder();
@@ -272,14 +320,14 @@ public class Day20 extends AbstractDay<List<Day20.Tile>> {
 
         public Set<Tile> getNeighbors() {
             return Stream.of(
-                    Optional.ofNullable(north),
-                    Optional.ofNullable(east),
-                    Optional.ofNullable(south),
-                    Optional.ofNullable(west)
-            )
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .collect(Collectors.toSet());
+                                 Optional.ofNullable(north),
+                                 Optional.ofNullable(east),
+                                 Optional.ofNullable(south),
+                                 Optional.ofNullable(west)
+                         )
+                         .filter(Optional::isPresent)
+                         .map(Optional::get)
+                         .collect(Collectors.toSet());
         }
 
         public void rotate() {

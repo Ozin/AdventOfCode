@@ -26,7 +26,7 @@ public class Day20Test {
 
         final Object result = day.getB();
 
-        assertEquals(273, result);
+        assertEquals(273L, result);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class Day20Test {
     public void bFinal() throws Exception {
         final Object result = day.getB();
 
-        assertEquals(341L, result);
+        assertEquals(1705L, result);
     }
 
     @Test
