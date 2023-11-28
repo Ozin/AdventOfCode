@@ -1,9 +1,13 @@
 package AOC2021;
 
 
+import io.vavr.Function2;
+import io.vavr.Tuple2;
 import io.vavr.collection.HashSet;
 import io.vavr.collection.List;
+import io.vavr.collection.Map;
 import io.vavr.collection.Set;
+import io.vavr.control.Option;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -15,20 +19,41 @@ public class Day19 {
     public static final Pattern SCANNER_PATTERN = Pattern.compile("--- scanner (\\d+) ---");
 
     protected String a(final String[] input) throws Exception {
-        final List<Scanner> scanners = getScanners(input);
-        return "" + null;
+        // GIVEN
+        final List<Day19.Scanner> scanners = getScanners(input);
+
+        // WHEN
+        var result = Scanner.combine(scanners).beacons.size();
+        return "" + result;
+    }
+
+    protected String b(final String[] input) throws Exception {
+        // GIVEN
+        final List<Day19.Scanner> scanners = getScanners(input);
+
+        // WHEN
+        var result = Scanner.combine(scanners);
+
+        final Integer max = scanners.map(result::searchOverlap)
+                                    .map(o -> o.getOrElseThrow(IllegalArgumentException::new))
+                                    .map(AlignedScanner::position)
+                                    .crossProduct()
+                                    .map(Function2.of(Beacon::manhatten).tupled())
+                                    .max().get();
+
+        return "" + max;
     }
 
     public List<Scanner> getScanners(final String[] input) {
         List<Scanner> scanners = List.empty();
-        Set<Beacon> currentBeacons = HashSet.empty();
+        HashSet<Beacon> currentBeacons = HashSet.empty();
         for (final String s : input) {
             if (s.isBlank()) continue;
 
             final Matcher matcher = SCANNER_PATTERN.matcher(s);
             if (matcher.find()) {
                 if (!currentBeacons.isEmpty()) {
-                    final Scanner scanner = null;//new Scanner(NeighborAwareBeacon.fromScanner(currentBeacons));
+                    final Scanner scanner = new Scanner(currentBeacons);
                     scanners = scanners.append(scanner);
                 }
                 currentBeacons = HashSet.empty();
@@ -37,84 +62,86 @@ public class Day19 {
 
             currentBeacons = currentBeacons.add(new Beacon(s));
         }
+        scanners = scanners.append(new Scanner(currentBeacons));
         return scanners;
     }
 
-    protected String b(final String[] input) throws Exception {
-        return "" + null;
-    }
+    public record Scanner(Set<Beacon> beacons) {
 
-    record Scanner(Set<Beacon> beacons) {
-    }
+        public static Scanner combine(List<Scanner> scanners) {
+            Scanner sum = scanners.head();
+            scanners = scanners.tail();
 
-    record Relation(int x, int y, int z) implements Comparable<Relation> {
+            while (!scanners.isEmpty()) {
+                for (Scanner s : scanners) {
+                    var newSum = sum.add(s);
+                    if (!newSum.isEmpty()) {
+                        sum = newSum.get();
+                        scanners = scanners.remove(s);
+                    }
+                }
+            }
 
-        public static final Comparator<Relation> RELATION_COMPARATOR = Comparator.comparingInt(Relation::x)
-                                                                                 .thenComparingInt(Relation::y)
-                                                                                 .thenComparingInt(Relation::z);
-
-        public Relation(final Beacon from, final Beacon to) {
-            this(from.x - to.x, from.y - to.y, from.z - to.z);
+            return sum;
         }
 
-        public boolean relativeEqual(final Relation other) {
-            return rotations().contains(other);
+        private Option<Scanner> add(Scanner other) {
+            return searchOverlap(other).map(a -> a.owned.union(this.beacons)).map(Scanner::new);
         }
 
-        public Set<Relation> rotations() {
-            //noinspection SuspiciousNameCombination
-            return HashSet.of(
-                    new Relation(x, y, z),
-                    new Relation(x, -y, -z),
-                    new Relation(x, z, -y),
-                    new Relation(x, -z, y),
-                    new Relation(y, x, -z),
-                    new Relation(y, -x, z),
-                    new Relation(y, z, x),
-                    new Relation(y, -z, -x),
-                    new Relation(z, y, -x),
-                    new Relation(z, -y, x),
-                    new Relation(z, x, y),
-                    new Relation(z, -x, -y),
-                    new Relation(-x, y, -z),
-                    new Relation(-x, -y, z),
-                    new Relation(-x, z, y),
-                    new Relation(-x, -z, -y),
-                    new Relation(-y, x, z),
-                    new Relation(-y, -x, -z),
-                    new Relation(-y, z, -x),
-                    new Relation(-y, -z, x),
-                    new Relation(-z, x, -y),
-                    new Relation(-z, -x, y),
-                    new Relation(-z, y, x),
-                    new Relation(-z, -y, -x)
-            );
+        public Option<AlignedScanner> searchOverlap(Scanner other) {
+            List<Scanner> rotations = other.rotations();
+            for (Scanner otherScanner : rotations) {
+                if (this.equals(otherScanner))
+                    return Option.some(new AlignedScanner(new Beacon(0, 0, 0), this.beacons, HashSet.empty()));
+                final var distances = getDistances(otherScanner);
+                final var mostCommonDistance = distances.filterValues(t -> t.size() > 11).maxBy(t -> t._2.size());
+
+                if (!mostCommonDistance.isEmpty())
+                    return mostCommonDistance.map(t -> mapToAlignedScanner(t._1, t._2, otherScanner));
+            }
+
+            return Option.none();
         }
 
-        public Relation normalize() {
-            return rotations().toSortedSet().head();
+        private AlignedScanner mapToAlignedScanner(Beacon shiftVector, Set<Tuple2<Beacon, Beacon>> sameBeacons, Scanner rotatedScanner) {
+            final Set<Beacon> sharedBeacons = sameBeacons.map(Tuple2::_1);
+            final Set<Beacon> owned = rotatedScanner.beacons().map(shiftVector::shift).removeAll(sharedBeacons);
+            // System.out.printf(
+            //         "shiftVector: %s, sharedBeacons: %s, owned: %s%n",
+            //         shiftVector,
+            //         sharedBeacons.size(),
+            //         owned.size()
+            // );
+            return new AlignedScanner(shiftVector, sharedBeacons, owned);
         }
 
-        private Relation rotateZ() {
-            //noinspection SuspiciousNameCombination
-            return new Relation(y, -x, z);
+        private Map<Beacon, Set<Tuple2<Beacon, Beacon>>> getDistances(Scanner otherScanner) {
+            return this.beacons()
+                       .toList()
+                       .crossProduct(otherScanner.beacons())
+                       .groupBy(Function2.of(Beacon::difference).tupled())
+                       .mapValues(HashSet::ofAll);
         }
 
-        private Relation rotateY() {
-            return new Relation(z, y, -x);
+        public List<Scanner> rotations() {
+            var rotatedBeacons = this.beacons.map(Beacon::rotations);
+            var numRotations = rotatedBeacons.head().size();
+
+            return List.range(0, numRotations).map(i -> rotatedBeacons.map(l -> l.get(i))).map(Scanner::new);
         }
 
-        private Relation rotateX() {
-            return new Relation(x, z, -y);
-        }
 
-        @Override
-        public int compareTo(final Relation o) {
-            return RELATION_COMPARATOR.compare(this, o);
+        public Scanner combineWith(Scanner other) {
+            var aligned = searchOverlap(other).map(AlignedScanner::owned).getOrElse(HashSet.empty());
+            return new Scanner(beacons.union(aligned));
         }
     }
 
-    record Beacon(int x, int y, int z) {
+    public record AlignedScanner(Beacon position, Set<Beacon> overlapped, Set<Beacon> owned) {
+    }
+
+    public record Beacon(int x, int y, int z) implements Comparable<Beacon> {
 
         public Beacon(final String s) {
             this(Arrays.stream(s.split(",")).mapToInt(Integer::parseInt).toArray());
@@ -124,9 +151,67 @@ public class Day19 {
             this(ints[0], ints[1], ints[2]);
         }
 
-        public Beacon relative(final Beacon other) {
+        public Beacon difference(final Beacon other) {
             return new Beacon(x - other.x, y - other.y, z - other.z);
         }
 
+        public int manhatten(final Beacon other) {
+            return Math.abs(x() - other.x()) + Math.abs(y() - other.y()) + Math.abs(z() - other.z());
+        }
+
+        public List<Beacon> rotations() {
+            //noinspection SuspiciousNameCombination
+            return List.of(
+                    new Beacon(x, y, z),
+                    new Beacon(x, -y, -z),
+                    new Beacon(x, z, -y),
+                    new Beacon(x, -z, y),
+                    new Beacon(y, x, -z),
+                    new Beacon(y, -x, z),
+                    new Beacon(y, z, x),
+                    new Beacon(y, -z, -x),
+                    new Beacon(z, y, -x),
+                    new Beacon(z, -y, x),
+                    new Beacon(z, x, y),
+                    new Beacon(z, -x, -y),
+                    new Beacon(-x, y, -z),
+                    new Beacon(-x, -y, z),
+                    new Beacon(-x, z, y),
+                    new Beacon(-x, -z, -y),
+                    new Beacon(-y, x, z),
+                    new Beacon(-y, -x, -z),
+                    new Beacon(-y, z, -x),
+                    new Beacon(-y, -z, x),
+                    new Beacon(-z, x, -y),
+                    new Beacon(-z, -x, y),
+                    new Beacon(-z, y, x),
+                    new Beacon(-z, -y, -x)
+            );
+        }
+
+        public boolean rotationalEqual(Beacon other) {
+            return rotations().exists(other::equals);
+        }
+
+        @Override
+        public String toString() {
+            return "%d,%d,%d".formatted(x, y, z);
+        }
+
+        public Beacon shift(Beacon other) {
+            return new Beacon(x + other.x, y + other.y, z + other.z);
+        }
+
+        @Override
+        public int compareTo(Beacon o) {
+            return Comparator.comparingInt(Beacon::x)
+                             .thenComparingInt(Beacon::y)
+                             .thenComparingInt(Beacon::z)
+                             .compare(this, o);
+        }
+
+        public Beacon negate() {
+            return new Beacon(-x, -y, -z);
+        }
     }
 }
