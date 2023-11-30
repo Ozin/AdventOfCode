@@ -35,9 +35,8 @@ public interface AocTest {
     private Stream<DynamicTest> getDynamicTest(final Object dayImplementation, final URL is) {
         if (is == null) return Stream.empty();
 
-        List<String> testContent = null;
-        try {
-            testContent = new YamlReader(new InputStreamReader(is.openStream())).read(List.class);
+        try(final InputStreamReader reader = new InputStreamReader(is.openStream())) {
+            List<String> testContent = new YamlReader(reader).read(List.class);
 
             final String testName = is.toString().substring(78);
             final DynamicTest getA = Arrays.stream(dayImplementation.getClass().getDeclaredMethods())
