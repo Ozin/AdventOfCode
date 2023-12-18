@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.util.function.Predicate.not;
 
@@ -29,14 +31,11 @@ public class Point3D implements Comparable<Point3D> {
     }
 
     private final static Comparator<Point3D> COMPARATOR = Comparator.comparingInt(Point3D::getZ)
-        .thenComparingInt(Point3D::getX)
-        .thenComparingInt(Point3D::getY);
+                                                                    .thenComparingInt(Point3D::getX)
+                                                                    .thenComparingInt(Point3D::getY);
 
     public Set<Point3D> getNeighbors() {
-        return getNeighborsIncludingSelf()
-            .stream()
-            .filter(not(this::equals))
-            .collect(Collectors.toSet());
+        return getNeighborsIncludingSelf().stream().filter(not(this::equals)).collect(Collectors.toSet());
     }
 
     public Set<Point3D> getNeighborsIncludingSelf() {
@@ -83,5 +82,12 @@ public class Point3D implements Comparable<Point3D> {
             }
             System.out.println();
         }
+    }
+
+    public Stream<Point3D> streamCuboid(Point3D point3D) {
+        return IntStream.rangeClosed(this.x, point3D.getX()).boxed().parallel()
+                        .flatMap(x -> IntStream.rangeClosed(this.y, point3D.getY()).mapToObj(y -> new Point(x, y)))
+                        .flatMap(p2d -> IntStream.rangeClosed(this.z, point3D.getZ())
+                                                 .mapToObj(z -> new Point3D(p2d.getX(), p2d.getY(), z)));
     }
 }
