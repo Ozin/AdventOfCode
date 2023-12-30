@@ -1,7 +1,4 @@
-use std::{
-    collections::HashSet,
-    fs::read_to_string,
-};
+use std::{collections::HashSet, fs::read_to_string};
 
 fn read_lines() -> Vec<String> {
     read_to_string("src/input.txt")
@@ -11,27 +8,29 @@ fn read_lines() -> Vec<String> {
         .collect()
 }
 
+fn to_set(s: &str) -> HashSet<u32> {
+    return s
+        .split_whitespace()
+        .filter_map(|n| n.parse().ok())
+        .collect();
+}
+
 fn main() {
-    let a = read_lines()
+    let mut points = 0;
+    for (index, (winning, actual)) in read_lines()
         .iter()
-        .map(|l| l[8..].split_once(" | ").unwrap())
-        .map(|(winning, actual)| {
-            let winning: HashSet<u32> = winning
-                .split_whitespace()
-                .filter_map(|n| n.parse().ok())
-                .collect();
-            let actual: HashSet<u32> = actual
-                .split_whitespace()
-                .filter_map(|n| n.parse().ok())
-                .collect();
+        .map(|l| l.split_once(":").unwrap().1)
+        .map(|l| l.split_once(" | ").unwrap())
+        .map(|(winning, actual)| (to_set(winning), to_set(actual)))
+        .enumerate()
+    {
+        let n = winning.intersection(&actual).count();
 
-            winning.intersection(&actual).count()
-        })
-        .filter(|v| *v != 0)
-        .map(|count| 1 << count - 1)
-        //.inspect(|v| println!("{}", v))
-        .sum::<u32>();
+        if n > 0 {
+            points += 1 << n - 1
+        }
+    }
 
-    println!("A: {}", a);
+    println!("A: {}", points);
     // println!("B: {}", b);
 }
