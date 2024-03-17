@@ -1,36 +1,29 @@
 use std::{collections::HashSet, fs::read_to_string};
 
-fn read_lines() -> Vec<String> {
-    read_to_string("src/input.txt")
-        .unwrap() // panic on possible file-reading errors
-        .lines() // split the string into an iterator of string slices
-        .map(String::from)
-        .collect()
-}
-
-fn to_set(s: &str) -> HashSet<u32> {
-    return s
-        .split_whitespace()
-        .filter_map(|n| n.parse().ok())
-        .collect();
-}
 
 fn main() {
-    let mut points = 0;
-    for (index, (winning, actual)) in read_lines()
-        .iter()
-        .map(|l| l.split_once(":").unwrap().1)
-        .map(|l| l.split_once(" | ").unwrap())
-        .map(|(winning, actual)| (to_set(winning), to_set(actual)))
-        .enumerate()
-    {
-        let n = winning.intersection(&actual).count();
+    let input = read_to_string("src/input.txt").unwrap();
 
-        if n > 0 {
-            points += 1 << n - 1
+    let mut p1 = 0;
+    let mut copies = vec![1; input.split('\n').count()];
+    for (i, l) in input.trim().split('\n').enumerate() {
+        let rest = l.split_once(": ").unwrap().1;
+        let (wanted, got) = rest.split_once(" | ").unwrap();
+        let wanted = wanted
+            .split_whitespace()
+            .map(|w| w.parse::<usize>().unwrap())
+            .collect::<Vec<_>>();
+        let won = got
+            .split_whitespace()
+            .map(|w| w.parse::<usize>().unwrap())
+            .filter(|c| wanted.contains(c))
+            .count();
+        p1 += if won != 0 { 1 << (won - 1) } else { 0 };
+        for j in 0..won {
+            copies[i + j + 1] += copies[i];
         }
     }
+    println!("A: {}", p1);
+    println!("B: {}", copies.iter().sum::<i32>());
 
-    println!("A: {}", points);
-    // println!("B: {}", b);
 }
